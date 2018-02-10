@@ -4,6 +4,17 @@
   "main": "./dist/main.js",
   "author": "iyonaga <yiyonaga@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "lint": "eslint --ext .js,.jsx src --format codeframe",
+    "lint:fix": "eslint --ext .js,.jsx src --format codeframe --fix",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -16,10 +27,15 @@
     "enzyme": "^3.3.0",
     "eslint": "^4.17.0",
     "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-prettier": "^2.6.0",
     "eslint-plugin-react": "^7.6.1",
+    "husky": "^0.14.3",
     "jest": "^22.2.2",
+    "lint-staged": "^6.1.0",
+    "prettier": "^1.10.2",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.11.1"
   },
