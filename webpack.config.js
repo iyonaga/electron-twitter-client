@@ -1,5 +1,5 @@
-var webpack = require('webpack');
-var path = require('path');
+// const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
   entry: {
@@ -22,9 +22,9 @@ module.exports = {
         test: /\.js$/,
         use: 'babel-loader',
         exclude: /node_modules/
-      },
+      }
     ]
   },
 
   target: 'electron-main'
-}
+};
