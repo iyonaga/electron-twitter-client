@@ -1,6 +1,7 @@
 // const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -48,7 +49,13 @@ module.exports = {
     extensions: ['.js', '.jsx']
   },
 
-  plugins: [new ExtractTextPlugin('styles.css')],
+  plugins: [
+    new ExtractTextPlugin('styles.css'),
+    new HtmlWebpackPlugin({
+      inject: false,
+      template: './src/index.html'
+    })
+  ],
 
   target: 'electron-main'
 };
