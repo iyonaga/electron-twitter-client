@@ -1,7 +1,6 @@
-// const webpack = require('webpack');
+const webpack = require('webpack');
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -22,25 +21,13 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        use: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.s?css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                minimize: true,
-                modules: true,
-                localIdentName: '[name]--[local]--[hash:base64:5]'
-              }
-            },
-            'sass-loader'
-          ]
-        })
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true
+          }
+        }
       }
     ]
   },
@@ -50,10 +37,16 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin('styles.css'),
-    new HtmlWebpackPlugin({
-      inject: false,
-      template: './src/index.html'
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    }),
+    new UglifyJSPlugin({
+      // parallel: true,
+      uglifyOptions: {
+        compress: {
+          drop_console: true
+        }
+      }
     })
   ],
 
