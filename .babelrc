@@ -1,10 +1,21 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {"electron": "1.7.12"},
-      "modules": false
-    }],
-    "react"
-  ],
-  "plugins": ["react-hot-loader/babel"]
+  "env": {
+    "main": {
+      "presets": [
+        ["env", {
+          "targets": {"electron": "1.7.12"}
+        }]
+      ]
+    },
+    "renderer": {
+      "presets": [
+        ["env", {
+          "targets": {"electron": "1.7.12"},
+          "modules": false
+        }],
+        "react"
+      ],
+      "plugins": ["react-hot-loader/babel"],
+    }
+  }
 }
