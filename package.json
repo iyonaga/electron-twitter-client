@@ -5,6 +5,14 @@
   "author": "iyonaga <yiyonaga@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "dev": "yarn dev:renderer",
+    "dev:main": "cross-env NODE_ENV=development electron ./src/main.js",
+    "dev:renderer": "cross-env NODE_ENV=development webpack-dev-server --config webpack.renderer.config.js",
+    "build": "yarn build:main && yarn build:renderer",
+    "build:main": "cross-env NODE_ENV=production webpack --config webpack.main.config.js",
+    "build:renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.config.js",
+    "prestart": "yarn build",
+    "start": "electron .",
     "lint": "eslint --ext .js,.jsx src --format codeframe",
     "lint:fix": "eslint --ext .js,.jsx src --format codeframe --fix",
     "precommit": "lint-staged"
