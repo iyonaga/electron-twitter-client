@@ -1,5 +1,5 @@
 {
-  "name": "electron-twitter-client",
+  "name": "sparrow",
   "version": "1.0.0",
   "main": "./dist/main.js",
   "author": "iyonaga <yiyonaga@gmail.com>",
