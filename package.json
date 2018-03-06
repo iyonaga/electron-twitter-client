@@ -57,6 +57,7 @@
     "webpack-dev-server": "^2.11.1"
   },
   "dependencies": {
+    "electron-json-storage": "^4.0.2",
     "node-twitter-api": "^1.8.0",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
