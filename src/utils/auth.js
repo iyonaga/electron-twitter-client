@@ -17,7 +17,7 @@ export default class Auth {
     });
   }
 
-  constructor(callback) {
+  constructor() {
     this.consumerKey = 'Xy2gvXDx6eU6qsJQp9s3gY1Nx';
     this.consumerSecret = 'vGFt5jpaQ2G9Z26UaWk1zzE5PMAiyTjdYLk9G1fBqBfg0dhmdr';
 
@@ -27,31 +27,38 @@ export default class Auth {
       callback: 'http://example.com'
     });
 
-    this.twitter.getRequestToken((err, requestToken, requestTokenSecret) => {
-      const url = this.twitter.getAuthUrl(requestToken);
+    return new Promise((resolve, reject) => {
+      this.twitter.getRequestToken((err, requestToken, requestTokenSecret) => {
+        if (err) {
+          reject(err);
+        }
 
-      Auth.createWindow(url);
+        const url = this.twitter.getAuthUrl(requestToken);
 
-      this.getAccessToken(requestToken, requestTokenSecret)
-        .then(tokens =>
-          this.verifyCredentials(tokens.accessToken, tokens.accessTokenSecret)
-        )
-        .then(res => {
-          callback(res);
-          if (win) {
-            win.close();
-          }
-        })
-        .catch(error => {
-          console.log(error);
-          new Auth(callback);
-        });
+        Auth.createWindow(url);
+
+        this.getAccessToken(requestToken, requestTokenSecret)
+          .then(tokens =>
+            this.verifyCredentials(tokens.accessToken, tokens.accessTokenSecret)
+          )
+          .then(res => {
+            resolve(res);
+            if (win) {
+              win.close();
+            }
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      });
     });
   }
 
   getAccessToken(requestToken, requestTokenSecret) {
     return new Promise((resolve, reject) => {
       win.webContents.on('will-navigate', (event, url) => {
+        event.preventDefault();
+
         const matched = url.match(
           /\?oauth_token=([^&]*)&oauth_verifier=([^&]*)/
         );

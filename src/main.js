@@ -34,7 +34,8 @@ app.on('ready', () => {
     if (error) throw error;
 
     if (Object.keys(data).length === 0) {
-      new Auth(res => {
+      const auth = new Auth();
+      auth.then(res => {
         storage.set('accounts', res, () => {
           if (error) throw error;
           createWindow();
