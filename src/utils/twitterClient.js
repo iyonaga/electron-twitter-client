@@ -1,18 +1,13 @@
 import Twit from 'twit';
-import storage from 'electron-json-storage';
 
 export default class TwitterClient {
-  constructor() {
-    storage.get('accounts', (error, data) => {
-      if (error) throw error;
-
-      this.client = new Twit({
-        consumer_key: data.consumerKey,
-        consumer_secret: data.consumerSecret,
-        access_token: data.accessToken,
-        access_token_secret: data.accessTokenSecret,
-        timeout_ms: 60 * 1000
-      });
+  constructor(accounts) {
+    this.client = new Twit({
+      consumer_key: accounts.consumerKey,
+      consumer_secret: accounts.consumerSecret,
+      access_token: accounts.accessToken,
+      access_token_secret: accounts.accessTokenSecret,
+      timeout_ms: 60 * 1000
     });
   }
 
