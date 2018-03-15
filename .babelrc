@@ -15,7 +15,10 @@
         }],
         "react"
       ],
-      "plugins": ["react-hot-loader/babel"],
+      "plugins": [
+        "babel-plugin-transform-class-properties",
+        "react-hot-loader/babel"
+      ],
     }
   }
 }
