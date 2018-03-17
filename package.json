@@ -60,6 +60,7 @@
   },
   "dependencies": {
     "electron-json-storage": "^4.0.2",
+    "moment": "^2.21.0",
     "node-twitter-api": "^1.8.0",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
