@@ -1,9 +1,8 @@
+@import '~ress';
 @import 'variables';
 
 html {
-  box-sizing: border-box;
   font-size: (10px/ 16px * 100%);
-  overflow-y: scroll;
 }
 
 body {
@@ -18,12 +17,6 @@ body {
   tap-highlight-color: rgba(0, 0, 0, 0);
   text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
-}
-
-*,
-::before,
-::after {
-  box-sizing: inherit;
 }
 
 img {
