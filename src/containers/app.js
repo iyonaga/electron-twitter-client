@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from './sidebar';
 import Contents from './contents';
-import styles from './app.scss';
+import styles from './app.module.scss';
 
 const App = () => (
   <div className={styles.container}>

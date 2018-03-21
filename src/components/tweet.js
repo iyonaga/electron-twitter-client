@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 import { substr } from 'stringz';
-import styles from './tweet.scss';
+import styles from './tweet.module.scss';
 
 export default class Tweet extends PureComponent {
   static propTypes = {

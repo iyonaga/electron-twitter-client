@@ -37,8 +37,29 @@ const config = {
           }
         }
       },
+
       {
         test: /\.s?css$/,
+        exclude: /\.module\.s?css$/,
+        use: ['css-hot-loader'].concat(
+          ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  minimize: true,
+                  modules: false
+                }
+              },
+              'sass-loader'
+            ]
+          })
+        )
+      },
+
+      {
+        test: /\.module\.s?css$/,
         use: ['css-hot-loader'].concat(
           ExtractTextPlugin.extract({
             fallback: 'style-loader',

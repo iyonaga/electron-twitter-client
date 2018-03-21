@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import storage from 'electron-json-storage';
 import TwitterClient from '../utils/twitterClient';
 import Tweet from '../components/tweet';
-import styles from './contents.scss';
+import styles from './contents.module.scss';
 
 export default class Contents extends Component {
   constructor() {
