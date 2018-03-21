@@ -7,6 +7,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 process.env.PORT = process.env.PORT || 8080;
 const port = process.env.PORT;
+const isProduction = process.env.NODE_ENV === 'production';
 
 const config = {
   entry: {
@@ -17,7 +18,7 @@ const config = {
     filename: '[name].js',
     path: path.join(__dirname, 'dist'),
     // libraryTarget: 'commonjs2',
-    publicPath: `http://localhost:${port}/`
+    publicPath: isProduction ? './' : `http://localhost:${port}/`
   },
 
   node: {
@@ -76,6 +77,64 @@ const config = {
             ]
           })
         )
+      },
+
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            mimetype: 'application/font-woff',
+            name: '[path][name].[ext]'
+          }
+        }
+      },
+
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            mimetype: 'application/font-woff',
+            name: '[path][name].[ext]'
+          }
+        }
+      },
+
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            mimetype: 'application/octet-stream',
+            name: '[path][name].[ext]'
+          }
+        }
+      },
+
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[path][name].[ext]'
+          }
+        }
+      },
+
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            mimetype: 'image/svg+xml',
+            name: '[path][name].[ext]'
+          }
+        }
       }
     ]
   },
@@ -120,7 +179,7 @@ const config = {
   }
 };
 
-if (process.env.NODE_ENV === 'production') {
+if (isProduction) {
   config.plugins.push(
     new UglifyJSPlugin({
       // parallel: true,
