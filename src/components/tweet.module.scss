@@ -32,7 +32,96 @@
 
 .tweetText {}
 
-.mediaContainer {}
+.mediaContainer {
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.imageContainer {
+  display: flex;
+
+  &--single {}
+
+  &--double {
+    //height: 253px;
+    //width: 506px;
+
+    .imageContents:first-child {
+      width: 50%;
+    }
+
+    .imageContents:last-child {
+      width: 50%;
+
+      .imageItem {
+        height: 100%;
+      }
+    }
+  }
+
+  &--triple {
+    //height: 337.3333333333333px;
+    //width: 506px;
+
+    .imageContents:first-child {
+      width: (2 / 3 * 100%);
+    }
+
+    .imageContents:last-child {
+      width: calc(100% / 3);
+
+      .imageItem {
+        height: calc((100% - 2px) / 2);
+      }
+    }
+
+  }
+
+  &--quad {
+    //height: 379.5px;
+    //width: 506px;
+
+    .imageContents:first-child {
+      width: (3 / 4 * 100%);
+    }
+
+    .imageContents:last-child {
+      width: calc(100% / 4);
+
+      .imageItem {
+        height: calc((100% - 2px) / 3);
+      }
+    }
+  }
+}
+
+.imageContents {}
+
+.multipleImages {
+  .imageContents:first-child {
+    margin-right: 1px;
+
+    .imageItem {
+      height: 100%;
+    }
+  }
+
+  .imageContents:last-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .imageItem {
+    img {
+      height: 100%;
+      object-fit: cover;
+      width: 100%;
+    }
+  }
+}
+
+.imageItem {}
 
 .footer {}
 

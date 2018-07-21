@@ -13,6 +13,46 @@ export default class Tweet extends PureComponent {
     return Moment(new Date(createdAt)).fromNow();
   }
 
+  static renderFirstImage(url) {
+    return (
+      <div className={styles.imageItem}>
+        <img src={url} alt="" />
+      </div>
+    );
+  }
+
+  static renderRemainingImage(media) {
+    media.shift();
+    return media.map(m => (
+      <div className={styles.imageItem} key={m.id_str}>
+        <img src={m.media_url} alt="" />
+      </div>
+    ));
+  }
+
+  static renderImages(entities) {
+    const isMultiple = entities.media.length > 1;
+    const numList = ['single', 'double', 'triple', 'quad'];
+    const imageNum = numList[entities.media.length - 1];
+
+    return (
+      <div
+        className={`${styles.imageContainer} ${
+          styles[`imageContainer--${imageNum}`]
+        } ${isMultiple ? styles.multipleImages : ''}`}
+      >
+        <div className={styles.imageContents}>
+          {Tweet.renderFirstImage(entities.media[0].media_url)}
+        </div>
+        {isMultiple && (
+          <div className={`${styles.imageContents}`}>
+            {Tweet.renderRemainingImage(entities.media)}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   linkedText() {
     const tweet = this.props.tweet.retweeted_status
       ? this.props.tweet.retweeted_status
@@ -78,7 +118,11 @@ export default class Tweet extends PureComponent {
 
     if (!tweet.extended_entities) return false;
 
-    return tweet.extended_entities.media.map(media => {
+    if (tweet.extended_entities.media[0].video_info) {
+      return this.renderVideo(tweet.extended_entities);
+    }
+    return Tweet.renderImages(tweet.extended_entities);
+  }
       if (media.type === 'photo') {
         return (
           <a href="#dummy" key={media.id_str}>
