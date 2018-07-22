@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 import { substr } from 'stringz';
+import { Player, BigPlayButton } from 'video-react';
 import styles from './tweet.module.scss';
 
 export default class Tweet extends PureComponent {
@@ -49,6 +50,16 @@ export default class Tweet extends PureComponent {
             {Tweet.renderRemainingImage(entities.media)}
           </div>
         )}
+      </div>
+    );
+  }
+
+  static renderVideo(video, thumbnail) {
+    return (
+      <div className={styles.videoContainer}>
+        <Player muted poster={thumbnail} src={video.variants[0].url}>
+          <BigPlayButton position="center" />
+        </Player>
       </div>
     );
   }
@@ -119,28 +130,12 @@ export default class Tweet extends PureComponent {
     if (!tweet.extended_entities) return false;
 
     if (tweet.extended_entities.media[0].video_info) {
-      return this.renderVideo(tweet.extended_entities);
+      return Tweet.renderVideo(
+        tweet.extended_entities.media[0].video_info,
+        tweet.extended_entities.media[0].media_url_https
+      );
     }
     return Tweet.renderImages(tweet.extended_entities);
-  }
-      if (media.type === 'photo') {
-        return (
-          <a href="#dummy" key={media.id_str}>
-            <img src={media.media_url} alt="" />
-          </a>
-        );
-      } else if (media.type === 'video' || media.type === 'animated_gif') {
-        return (
-          <video
-            src={media.video_info.variants[0].url}
-            poster={media.media_url}
-            key={media.id_str}
-            controls
-          />
-        );
-      }
-      return '';
-    });
   }
 
   render() {
