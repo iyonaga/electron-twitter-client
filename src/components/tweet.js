@@ -17,6 +17,10 @@ export default class Tweet extends PureComponent {
     return Moment(new Date(createdAt)).fromNow();
   }
 
+  static biggerProfileImage(url) {
+    return url.replace(/_normal/, '_bigger');
+  }
+
   static renderFirstImage(url) {
     return (
       <div className={styles.imageItem}>
@@ -151,7 +155,7 @@ export default class Tweet extends PureComponent {
         <a href="#dummy" className={styles.profile}>
           <img
             className={styles['profile--userIcon']}
-            src={user.profile_image_url}
+            src={Tweet.biggerProfileImage(user.profile_image_url)}
             alt=""
           />
           <div className={styles['profile--nameGroup']}>
