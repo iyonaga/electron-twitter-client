@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import Moment from 'moment';
 import { substr } from 'stringz';
 import { Player, BigPlayButton } from 'video-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRetweet } from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import styles from './tweet.module.scss';
 
 export default class Tweet extends PureComponent {
@@ -100,19 +103,19 @@ export default class Tweet extends PureComponent {
     sortedEntities.forEach(entity => {
       switch (entity.type) {
         case 'hashtag':
-          text = `${substr(text, 0, entity.indices[0])}<a href="#">#${
-            entity.text
-          }</a>${substr(text, entity.indices[1])}`;
+          text = `${substr(text, 0, entity.indices[0])}<a href="#" class=${
+            styles.link
+          }>#${entity.text}</a>${substr(text, entity.indices[1])}`;
           break;
         case 'url':
-          text = `${substr(text, 0, entity.indices[0])}<a href="#">${
-            entity.display_url
-          }</a>${substr(text, entity.indices[1])}`;
+          text = `${substr(text, 0, entity.indices[0])}<a href="#" class=${
+            styles.link
+          }>${entity.display_url}</a>${substr(text, entity.indices[1])}`;
           break;
         case 'user_mention':
-          text = `${substr(text, 0, entity.indices[0])}<a href="#">@${
-            entity.screen_name
-          }</a>${substr(text, entity.indices[1])}`;
+          text = `${substr(text, 0, entity.indices[0])}<a href="#" class=${
+            styles.link
+          }>@${entity.screen_name}</a>${substr(text, entity.indices[1])}`;
           break;
         default:
           break;
@@ -129,13 +132,19 @@ export default class Tweet extends PureComponent {
 
     if (!tweet.extended_entities) return false;
 
-    if (tweet.extended_entities.media[0].video_info) {
-      return Tweet.renderVideo(
-        tweet.extended_entities.media[0].video_info,
-        tweet.extended_entities.media[0].media_url_https
-      );
-    }
-    return Tweet.renderImages(tweet.extended_entities);
+    return (
+      <div className={styles.mediaContainer}>
+        {(() => {
+          if (tweet.extended_entities.media[0].video_info) {
+            return Tweet.renderVideo(
+              tweet.extended_entities.media[0].video_info,
+              tweet.extended_entities.media[0].media_url_https
+            );
+          }
+          return Tweet.renderImages(tweet.extended_entities);
+        })()}
+      </div>
+    );
   }
 
   render() {
@@ -148,9 +157,12 @@ export default class Tweet extends PureComponent {
             {(() => {
               if (tweet.retweeted_status) {
                 return (
-                  <p className={styles.retweetText}>
-                    Retweeted by {tweet.user.name}
-                  </p>
+                  <div>
+                    <p className={styles.retweetText}>
+                      <FontAwesomeIcon icon={faRetweet} /> Retweeted by{' '}
+                      {tweet.user.name}
+                    </p>
+                  </div>
                 );
               }
               return false;
@@ -182,7 +194,7 @@ export default class Tweet extends PureComponent {
                 __html: this.linkedText()
               }}
             />
-            <div className={styles.mediaContainer}>{this.renderMedia()}</div>
+            {this.renderMedia()}
           </div>
 
           <div className={styles.footer}>
@@ -192,14 +204,20 @@ export default class Tweet extends PureComponent {
                   styles['actionItem--retweet']
                 }`}
               >
-                retweet: {tweet.retweet_count}
+                <FontAwesomeIcon icon={faRetweet} />{' '}
+                <span className={styles.actionCount}>
+                  {tweet.retweet_count}
+                </span>
               </li>
               <li
                 className={`${styles.actionItem} ${
                   styles['actionItem--favorite']
                 }`}
               >
-                favorite: {tweet.favorite_count}
+                <FontAwesomeIcon icon={faHeart} />{' '}
+                <span className={styles.actionCount}>
+                  {tweet.favorite_count}
+                </span>
               </li>
             </ul>
           </div>

@@ -1,46 +1,80 @@
 .wrapper {
+  border-top: 1px solid #dadada;
   list-style: none;
-  padding-left: 58px;
+  padding: 12px 14px;
   position: relative;
+
+  &:first-child {
+    border-top: 0;
+  }
 }
 
-.content {}
+.content {
+  padding-left: 62px;
+}
 
 .header {}
 
 .retweetText {
   color: #999;
   font-size: 1.2rem;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .profile {
+  display: inline-block;
+
   &--userIcon {
     border-radius: 100%;
-    left: 0;
+    left: 14px;
     position: absolute;
   }
 
   &--userName {}
 
-  &--screenName {}
+  &--screenName {
+    color: #999;
+    margin-left: 1px;
+  }
 }
 
-.time {}
+.time {
+  color: #999;
+  display: inline-block;
+  margin-left: 10px;
+}
 
 .textContainer {}
 
 .tweetText {}
 
+.link {
+  color: #0070c9;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .mediaContainer {
+  border: 1px solid rgba(0, 0, 0, .1);
   border-radius: 5px;
+  margin-top: 10px;
   overflow: hidden;
 }
 
 .imageContainer {
   display: flex;
 
-  &--single {}
+  &--single {
+    .imageContents {
+      width: 100%;
+
+      img {
+        width: 100%;
+      }
+    }
+  }
 
   &--double {
     //height: 253px;
@@ -127,12 +161,27 @@
 
 .footer {}
 
-.actions {}
+.actions {
+  display: flex;
+  margin-top: 10px;
+}
 
 .actionItem {
-  display: inline-block;
+  align-items: center;
+  color: #999;
+  display: flex;
+
+  & + .actionItem {
+    margin-left: 20px;
+  }
 
   &--retweet {}
 
   &--favorite {}
+}
+
+.actionCount {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-left: 5px;
 }
