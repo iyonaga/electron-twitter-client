@@ -67,11 +67,26 @@ export default class Tweet extends PureComponent {
     );
   }
 
-  linkedText() {
-    const tweet = this.props.tweet.retweeted_status
-      ? this.props.tweet.retweeted_status
-      : this.props.tweet;
+  static renderMedia(tweet) {
+    if (!tweet.extended_entities) return false;
+    const entities = tweet.extended_entities;
 
+    return (
+      <div className={styles.mediaContainer}>
+        {(() => {
+          if (entities.media[0].video_info) {
+            return Tweet.renderVideo(
+              entities.media[0].video_info,
+              entities.media[0].media_url_https
+            );
+          }
+          return Tweet.renderImages(entities);
+        })()}
+      </div>
+    );
+  }
+
+  static linkedText(tweet) {
     let text = substr(
       tweet.full_text,
       tweet.display_text_range[0],
@@ -125,29 +140,14 @@ export default class Tweet extends PureComponent {
     return text.replace(/\n/g, '<br>');
   }
 
-  renderUser() {
-    const isRetweet = !!this.props.tweet.retweeted_status;
-    const user = isRetweet
-      ? this.props.tweet.retweeted_status.user
-      : this.props.tweet.user;
-    const createdAt = isRetweet
-      ? this.props.tweet.retweeted_status.created_at
-      : this.props.tweet.created_at;
+  isRetweet() {
+    return !!this.props.tweet.retweeted_status;
+  }
 
+  renderHeader(tweet, user) {
     return (
       <div>
-        {(() => {
-          if (isRetweet) {
-            return (
-              <div>
-                <p className={styles.retweetText}>
-                  <FontAwesomeIcon icon={faRetweet} /> Retweeted by {user.name}
-                </p>
-              </div>
-            );
-          }
-          return false;
-        })()}
+        {this.renderRetweetedText()}
         <a href="#dummy" className={styles.profile}>
           <img
             className={styles['profile--userIcon']}
@@ -161,76 +161,75 @@ export default class Tweet extends PureComponent {
             </span>
           </div>
         </a>
-        <div className={styles.time}>{Tweet.relativeTime(createdAt)}</div>
+        <div className={styles.time}>
+          {Tweet.relativeTime(tweet.created_at)}
+        </div>
       </div>
     );
   }
 
-  renderMedia() {
-    const tweet = this.props.tweet.retweeted_status
-      ? this.props.tweet.retweeted_status
-      : this.props.tweet;
-
-    if (!tweet.extended_entities) return false;
-
+  renderRetweetedText() {
+    const { tweet } = this.props;
+    if (!this.isRetweet()) return false;
     return (
-      <div className={styles.mediaContainer}>
-        {(() => {
-          if (tweet.extended_entities.media[0].video_info) {
-            return Tweet.renderVideo(
-              tweet.extended_entities.media[0].video_info,
-              tweet.extended_entities.media[0].media_url_https
-            );
-          }
-          return Tweet.renderImages(tweet.extended_entities);
-        })()}
+      <div>
+        <p className={styles.retweetText}>
+          <FontAwesomeIcon icon={faRetweet} /> Retweeted by {tweet.user.name}
+        </p>
+      </div>
+    );
+  }
+
+  renderContent() {
+    const { tweet } = this.props;
+    return tweet.retweeted_status
+      ? this.renderTweet(tweet.retweeted_status, tweet.retweeted_status.user)
+      : this.renderTweet(tweet, tweet.user);
+  }
+
+  renderTweet(tweet, user) {
+    return (
+      <div>
+        <div className={styles.header}>{this.renderHeader(tweet, user)}</div>
+
+        <div className={styles.textContainer}>
+          <div
+            className={styles.tweetText}
+            dangerouslySetInnerHTML={{
+              __html: Tweet.linkedText(tweet)
+            }}
+          />
+          {Tweet.renderMedia(tweet)}
+        </div>
+
+        <div className={styles.footer}>
+          <ul className={styles.actions}>
+            <li
+              className={`${styles.actionItem} ${
+                tweet.retweeted ? styles['actionItem--retweeted'] : ''
+              }`}
+            >
+              <FontAwesomeIcon icon={faRetweet} />{' '}
+              <span className={styles.actionCount}>{tweet.retweet_count}</span>
+            </li>
+            <li
+              className={`${styles.actionItem} ${
+                tweet.favorited ? styles['actionItem--favorited'] : ''
+              }`}
+            >
+              <FontAwesomeIcon icon={faHeart} />{' '}
+              <span className={styles.actionCount}>{tweet.favorite_count}</span>
+            </li>
+          </ul>
+        </div>
       </div>
     );
   }
 
   render() {
-    const { tweet } = this.props;
-
     return (
       <li className={styles.wrapper}>
-        <div className={styles.content}>
-          <div className={styles.header}>{this.renderUser()}</div>
-
-          <div className={styles.textContainer}>
-            <div
-              className={styles.tweetText}
-              dangerouslySetInnerHTML={{
-                __html: this.linkedText()
-              }}
-            />
-            {this.renderMedia()}
-          </div>
-
-          <div className={styles.footer}>
-            <ul className={styles.actions}>
-              <li
-                className={`${styles.actionItem} ${
-                  styles['actionItem--retweet']
-                }`}
-              >
-                <FontAwesomeIcon icon={faRetweet} />{' '}
-                <span className={styles.actionCount}>
-                  {tweet.retweet_count}
-                </span>
-              </li>
-              <li
-                className={`${styles.actionItem} ${
-                  styles['actionItem--favorite']
-                }`}
-              >
-                <FontAwesomeIcon icon={faHeart} />{' '}
-                <span className={styles.actionCount}>
-                  {tweet.favorite_count}
-                </span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <div className={styles.content}>{this.renderContent()}</div>
       </li>
     );
   }

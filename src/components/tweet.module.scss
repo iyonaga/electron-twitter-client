@@ -175,13 +175,17 @@
     margin-left: 20px;
   }
 
-  &--retweet {}
+  &--retweeted {
+    color: #30a564;
+  }
 
-  &--favorite {}
+  &--favorited {
+    color: #ce2070;
+  }
 }
 
 .actionCount {
   font-size: 1.3rem;
-  font-weight: bold;
+  font-weight: 500;
   margin-left: 5px;
 }
