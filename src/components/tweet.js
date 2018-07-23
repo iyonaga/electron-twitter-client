@@ -125,6 +125,47 @@ export default class Tweet extends PureComponent {
     return text.replace(/\n/g, '<br>');
   }
 
+  renderUser() {
+    const isRetweet = !!this.props.tweet.retweeted_status;
+    const user = isRetweet
+      ? this.props.tweet.retweeted_status.user
+      : this.props.tweet.user;
+    const createdAt = isRetweet
+      ? this.props.tweet.retweeted_status.created_at
+      : this.props.tweet.created_at;
+
+    return (
+      <div>
+        {(() => {
+          if (isRetweet) {
+            return (
+              <div>
+                <p className={styles.retweetText}>
+                  <FontAwesomeIcon icon={faRetweet} /> Retweeted by {user.name}
+                </p>
+              </div>
+            );
+          }
+          return false;
+        })()}
+        <a href="#dummy" className={styles.profile}>
+          <img
+            className={styles['profile--userIcon']}
+            src={user.profile_image_url}
+            alt=""
+          />
+          <div className={styles['profile--nameGroup']}>
+            <strong className={styles['profile--userName']}>{user.name}</strong>
+            <span className={styles['profile--screenName']}>
+              @{user.screen_name}
+            </span>
+          </div>
+        </a>
+        <div className={styles.time}>{Tweet.relativeTime(createdAt)}</div>
+      </div>
+    );
+  }
+
   renderMedia() {
     const tweet = this.props.tweet.retweeted_status
       ? this.props.tweet.retweeted_status
@@ -153,39 +194,7 @@ export default class Tweet extends PureComponent {
     return (
       <li className={styles.wrapper}>
         <div className={styles.content}>
-          <div className={styles.header}>
-            {(() => {
-              if (tweet.retweeted_status) {
-                return (
-                  <div>
-                    <p className={styles.retweetText}>
-                      <FontAwesomeIcon icon={faRetweet} /> Retweeted by{' '}
-                      {tweet.user.name}
-                    </p>
-                  </div>
-                );
-              }
-              return false;
-            })()}
-            <a href="#dummy" className={styles.profile}>
-              <img
-                className={styles['profile--userIcon']}
-                src={tweet.user.profile_image_url}
-                alt=""
-              />
-              <div className={styles['profile--nameGroup']}>
-                <strong className={styles['profile--userName']}>
-                  {tweet.user.name}
-                </strong>
-                <span className={styles['profile--screenName']}>
-                  @{tweet.user.screen_name}
-                </span>
-              </div>
-            </a>
-            <div className={styles.time}>
-              {Tweet.relativeTime(tweet.created_at)}
-            </div>
-          </div>
+          <div className={styles.header}>{this.renderUser()}</div>
 
           <div className={styles.textContainer}>
             <div
