@@ -17,6 +17,7 @@
       ],
       "plugins": [
         "babel-plugin-transform-class-properties",
+        "babel-plugin-transform-function-bind",
         "babel-plugin-transform-object-rest-spread",
         "react-hot-loader/babel"
       ],
