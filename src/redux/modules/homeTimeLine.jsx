@@ -1,19 +1,21 @@
-export const getHomeTimeline = tweets => ({
-  type: 'GET_HOME_TIMELINE',
-  payload: tweets
-});
+import { createActions, handleActions } from 'redux-actions';
+
+const GET_HOME_TIMELINE = 'GET_HOME_TIMELINE';
+
+export const { getHomeTimeline } = createActions(GET_HOME_TIMELINE);
 
 const initialState = {
   tweets: []
 };
 
-export default function homeTimelineReducer(state = initialState, action) {
-  switch (action.type) {
-    case 'GET_HOME_TIMELINE':
-      return Object.assign({}, state, {
+const homeTimelineReducer = handleActions(
+  {
+    GET_HOME_TIMELINE: (state, action) =>
+      Object.assign({}, state, {
         tweets: action.payload
-      });
-    default:
-      return state;
-  }
-}
+      })
+  },
+  initialState
+);
+
+export default homeTimelineReducer;
