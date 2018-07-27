@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRetweet } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import styles from './tweet.module.scss';
+import { createTwitterClient } from '../utils/twitterClient';
 
 export default class Tweet extends PureComponent {
   static propTypes = {
@@ -144,6 +145,31 @@ export default class Tweet extends PureComponent {
     return text.replace(/\n/g, '<br>');
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isFavorited: this.props.tweet.favorited
+    };
+    this.onFavorite = ::this.onFavorite;
+  }
+
+  onFavorite() {
+    const { tweet } = this.props;
+
+    createTwitterClient()
+      .then(client => {
+        if (this.state.isFavorited) {
+          return client.destroyFavorite(tweet.id_str);
+        }
+        return client.createFavorite(tweet.id_str);
+      })
+      .then(res => {
+        this.setState({
+          isFavorited: res.favorited
+        });
+      });
+  }
+
   isRetweet() {
     return !!this.props.tweet.retweeted_status;
   }
@@ -218,8 +244,9 @@ export default class Tweet extends PureComponent {
             </li>
             <li
               className={`${styles.actionItem} ${
-                tweet.favorited ? styles['actionItem--favorited'] : ''
+                this.state.isFavorited ? styles['actionItem--favorited'] : ''
               }`}
+              onClick={this.onFavorite}
             >
               <FontAwesomeIcon icon={faHeart} />{' '}
               <span className={styles.actionCount}>{tweet.favorite_count}</span>

@@ -1,4 +1,5 @@
 import Twit from 'twit';
+import storage from 'electron-json-storage';
 
 export default class TwitterClient {
   constructor(accounts) {
@@ -156,4 +157,16 @@ export default class TwitterClient {
       });
     });
   }
+}
+
+export function createTwitterClient() {
+  return new Promise((resolve, reject) => {
+    storage.get('accounts', (error, data) => {
+      if (error || Object.keys(data).length === 0) {
+        reject(new Error(error));
+      } else {
+        resolve(new TwitterClient(data));
+      }
+    });
+  });
 }
