@@ -1,13 +1,12 @@
-import React from 'react';
-import Sidebar from './sidebar';
-import Contents from './contents';
-import styles from './app.module.scss';
+import { connect } from 'react-redux';
+import App from '../components/app';
 
-const App = () => (
-  <div className={styles.container}>
-    <Sidebar />
-    <Contents />
-  </div>
-);
+function mapStateToProps(state) {
+  return state;
+}
 
-export default App;
+function mapDispatchToProps() {
+  return {};
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

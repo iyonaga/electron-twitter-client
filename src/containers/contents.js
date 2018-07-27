@@ -1,38 +1,29 @@
-import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import storage from 'electron-json-storage';
 import TwitterClient from '../utils/twitterClient';
-import Tweet from '../components/tweet';
-import styles from './contents.module.scss';
+import Contents from '../components/contents';
+import { getHomeTimeline } from '../redux/modules/homeTimeLine';
 
-export default class Contents extends Component {
-  constructor() {
-    super();
-    this.state = {
-      tweets: []
-    };
-  }
-
-  componentDidMount() {
-    storage.get('accounts', (error, data) => {
-      if (error) throw error;
-
-      const client = new TwitterClient(data);
-      client.getHomeTimeLine({ tweet_mode: 'extended' }).then(tweets => {
-        this.setState({
-          tweets
-        });
-        console.log(tweets);
-      });
-    });
-  }
-
-  render() {
-    return (
-      <ul className={styles.container}>
-        {this.state.tweets.map(tweet => (
-          <Tweet key={tweet.id_str} tweet={tweet} />
-        ))}
-      </ul>
-    );
-  }
+function mapStateToProps(state) {
+  return {
+    tweets: state.homeTimelineReducer.tweets
+  };
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getHomeTimeline() {
+      storage.get('accounts', (error, data) => {
+        if (error) throw error;
+
+        const client = new TwitterClient(data);
+        client.getHomeTimeLine({ tweet_mode: 'extended' }).then(tweets => {
+          console.log(tweets);
+          dispatch(getHomeTimeline(tweets));
+        });
+      });
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Contents);
