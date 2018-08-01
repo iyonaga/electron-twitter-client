@@ -12,9 +12,9 @@ export default class TwitterClient {
     });
   }
 
-  postTweet(status) {
+  postTweet(params) {
     return new Promise((resolve, reject) => {
-      this.client.post('statuses/update', { status }, (error, data) => {
+      this.client.post('statuses/update', params, (error, data) => {
         if (error) {
           reject(error);
         } else {
@@ -63,6 +63,34 @@ export default class TwitterClient {
   postUnRetweet(id) {
     return new Promise((resolve, reject) => {
       this.client.post('statuses/unretweet/:id', { id }, (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  uploadMedia(params) {
+    return new Promise((resolve, reject) => {
+      this.client.post(
+        'media/upload',
+        { media_data: params.media },
+        (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        }
+      );
+    });
+  }
+
+  createMediaMetaData(params) {
+    return new Promise((resolve, reject) => {
+      this.client.post('media/metadata/create', params, (error, data) => {
         if (error) {
           reject(error);
         } else {

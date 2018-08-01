@@ -6,7 +6,8 @@ import { getHomeTimeline } from '../redux/modules/homeTimeLine';
 
 function mapStateToProps(state) {
   return {
-    tweets: state.homeTimelineReducer.tweets
+    tweets: state.homeTimelineReducer.tweets,
+    isTweetBoxOpen: state.sidebarReducer.isTweetBoxOpen
   };
 }
 

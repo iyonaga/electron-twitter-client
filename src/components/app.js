@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from './sidebar';
+import Sidebar from '../containers/sidebar';
 import Contents from '../containers/contents';
 import styles from './app.module.scss';
 
