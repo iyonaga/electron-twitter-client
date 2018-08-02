@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
+import { Picker } from 'emoji-mart';
 import twitterText from 'twitter-text';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage } from '@fortawesome/free-regular-svg-icons';
+import { faImage, faGrinAlt } from '@fortawesome/free-regular-svg-icons';
 import styles from './tweetBox.module.scss';
 import { createTwitterClient } from '../utils/twitterClient';
 
@@ -10,12 +11,25 @@ export default class TweetBox extends PureComponent {
     super(props);
     this.state = {
       isTweetable: false,
+      isOpenPicker: false,
       images: []
     };
     this.onChangeText = ::this.onChangeText;
     this.onSelectImage = ::this.onSelectImage;
     this.onRemoveImage = ::this.onRemoveImage;
+    this.onTogglePicker = ::this.onTogglePicker;
+    this.onClosePicker = ::this.onClosePicker;
+    this.onSelectEmoji = ::this.onSelectEmoji;
     this.onPostTweet = ::this.onPostTweet;
+  }
+
+  componentDidMount() {
+    this.textArea.focus();
+    document.addEventListener('click', this.onClosePicker);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.onClosePicker);
   }
 
   onChangeText() {
@@ -64,6 +78,33 @@ export default class TweetBox extends PureComponent {
     this.setState({
       images
     });
+  }
+
+  onTogglePicker() {
+    this.setState({
+      isOpenPicker: !this.state.isOpenPicker
+    });
+  }
+
+  onClosePicker(e) {
+    if (this.toggleButton.contains(e.target)) {
+      return;
+    }
+
+    if (!this.picker || !this.picker.contains(e.target)) {
+      this.setState({
+        isOpenPicker: false
+      });
+    }
+  }
+
+  onSelectEmoji(res) {
+    const text = this.textArea.value;
+    const cursorPos = this.textArea.selectionStart;
+    const before = text.substr(0, cursorPos);
+    const after = text.substr(cursorPos);
+    this.textArea.value = `${before}${res.native}${after}`;
+    this.textArea.selectionStart = cursorPos + res.native.length;
   }
 
   onPostTweet() {
@@ -169,6 +210,31 @@ export default class TweetBox extends PureComponent {
               <label htmlFor="imageSelector">
                 <FontAwesomeIcon icon={faImage} />
               </label>
+            </div>
+            <div className={styles.emojiPicker}>
+              <button
+                ref={c => {
+                  this.toggleButton = c;
+                }}
+                className={styles.toggleButton}
+                onClick={this.onTogglePicker}
+              >
+                <FontAwesomeIcon icon={faGrinAlt} />
+              </button>
+              {this.state.isOpenPicker && (
+                <div
+                  ref={c => {
+                    this.picker = c;
+                  }}
+                >
+                  <Picker
+                    emojiSize={18}
+                    set="twitter"
+                    showPreview={false}
+                    onSelect={this.onSelectEmoji}
+                  />
+                </div>
+              )}
             </div>
           </div>
           <button

@@ -68,6 +68,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
     "electron-json-storage": "^4.0.2",
+    "emoji-mart": "^2.7.0",
     "moment": "^2.21.0",
     "node-twitter-api": "^1.8.0",
     "prop-types": "^15.6.0",
@@ -79,6 +80,7 @@
     "redux-saga": "^0.16.0",
     "ress": "^1.2.2",
     "stringz": "^0.4.0",
+    "twemoji": "^11.0.0",
     "twit": "^2.2.9",
     "twitter-text": "^2.0.4",
     "video-react": "^0.13.0"

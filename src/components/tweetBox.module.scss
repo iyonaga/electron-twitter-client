@@ -152,17 +152,36 @@
 }
 
 .options {
+  align-items: center;
+  display: flex;
   font-size: 1.8em;
 }
 
 .imageSelector {
-  font-weight: 300;
   color: #50b2f5;
   line-height: 1;
+  margin-right: 14px;
 
   input[type="file"]:disabled + label {
     color: #8cccf8;
   }
+}
+
+.emojiPicker {
+  color: #50b2f5;
+  line-height: 1;
+  position: relative;
+
+  :global(.emoji-mart) {
+    left: 0;
+    position: absolute;
+    top: 29px;
+    z-index: 10;
+  }
+}
+
+.toggleButton {
+  outline: none;
 }
 
 .tweetButton {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Moment from 'moment';
 import { substr } from 'stringz';
 import { Player, BigPlayButton } from 'video-react';
+import twemoji from 'twemoji';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRetweet } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
@@ -145,6 +146,10 @@ export default class Tweet extends PureComponent {
     return text.replace(/\n/g, '<br>');
   }
 
+  static applyEmoji(tweet) {
+    return twemoji.parse(tweet);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -226,7 +231,8 @@ export default class Tweet extends PureComponent {
           <div
             className={styles.tweetText}
             dangerouslySetInnerHTML={{
-              __html: Tweet.linkedText(tweet)
+              // __html: Tweet.linkedText(tweet)
+              __html: Tweet.applyEmoji(Tweet.linkedText(tweet))
             }}
           />
           {Tweet.renderMedia(tweet)}
