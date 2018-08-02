@@ -22,6 +22,7 @@ export default class TweetBox extends PureComponent {
     this.onClosePicker = ::this.onClosePicker;
     this.onSelectEmoji = ::this.onSelectEmoji;
     this.onPostTweet = ::this.onPostTweet;
+    this.updateProgressBar = ::this.updateProgressBar;
   }
 
   componentDidMount() {
@@ -37,26 +38,7 @@ export default class TweetBox extends PureComponent {
   onChangeText() {
     const text = this.textArea.value;
     const result = twitterText.parseTweet(text);
-    // const progress = result.permillage / 10;
-    // let progressBarRightStyle;
-    // let progressBarLeftStyle;
-    //
-    // if (progress > 100) {
-    //   progressBarRightStyle = `border-color: #bf3131; transform: rotate(180deg);`;
-    //   progressBarLeftStyle = progressBarRightStyle;
-    // } else if (progress > 50) {
-    //   const deg = (progress - 50) * (180 / 50);
-    //   progressBarRightStyle = `border-color: #1ca1f3; transform: rotate(180deg);`;
-    //   progressBarLeftStyle = `border-color: #1ca1f3; transform: rotate(${deg}deg);`;
-    // } else {
-    //   const deg = progress * (180 / 50);
-    //   progressBarRightStyle = `border-color: #1ca1f3; transform: rotate(${deg}deg);`;
-    //   progressBarLeftStyle = `border-color: #1ca1f3; transform: rotate(0deg);`;
-    // }
-    //
-    // this.progressBarRight.style = progressBarRightStyle;
-    // this.progressBarLeft.style = progressBarLeftStyle;
-
+    this.updateProgressBar(result.permillage);
     this.setState({
       isTweetable: result.valid
     });
@@ -152,6 +134,28 @@ export default class TweetBox extends PureComponent {
       });
   }
 
+  updateProgressBar(permillage) {
+    const progress = permillage / 10;
+    let progressBarRightStyle;
+    let progressBarLeftStyle;
+
+    if (progress > 100) {
+      progressBarRightStyle = `border-color: #bf3131; transform: rotate(180deg);`;
+      progressBarLeftStyle = progressBarRightStyle;
+    } else if (progress > 50) {
+      const deg = (progress - 50) * (180 / 50);
+      progressBarRightStyle = `border-color: #1ca1f3; transform: rotate(180deg);`;
+      progressBarLeftStyle = `border-color: #1ca1f3; transform: rotate(${deg}deg);`;
+    } else {
+      const deg = progress * (180 / 50);
+      progressBarRightStyle = `border-color: #1ca1f3; transform: rotate(${deg}deg);`;
+      progressBarLeftStyle = `border-color: #1ca1f3; transform: rotate(0deg);`;
+    }
+
+    this.progressBarRight.style = progressBarRightStyle;
+    this.progressBarLeft.style = progressBarLeftStyle;
+  }
+
   render() {
     return (
       <div className={styles.container}>
@@ -163,24 +167,6 @@ export default class TweetBox extends PureComponent {
           onChange={this.onChangeText}
           placeholder="What’s happening?"
         />
-        {/* <div className={styles.progress}>
-          <div className={styles.progressRight}>
-            <span
-              className={styles.progressBar}
-              ref={c => {
-                this.progressBarRight = c;
-              }}
-            />
-          </div>
-          <div className={styles.progressLeft}>
-            <span
-              className={styles.progressBar}
-              ref={c => {
-                this.progressBarLeft = c;
-              }}
-            />
-          </div>
-        </div> */}
         <div className={styles.thumbnailContainer}>
           <div className={styles.thumbnailList}>
             {this.state.images.map(image => (
@@ -240,13 +226,33 @@ export default class TweetBox extends PureComponent {
               )}
             </div>
           </div>
-          <button
-            className={styles.tweetButton}
-            onClick={this.onPostTweet}
-            disabled={!this.state.isTweetable}
-          >
-            Tweet
-          </button>
+          <div className={styles.rightItems}>
+            <div className={styles.progress}>
+              <div className={styles.progressRight}>
+                <span
+                  className={styles.progressBar}
+                  ref={c => {
+                    this.progressBarRight = c;
+                  }}
+                />
+              </div>
+              <div className={styles.progressLeft}>
+                <span
+                  className={styles.progressBar}
+                  ref={c => {
+                    this.progressBarLeft = c;
+                  }}
+                />
+              </div>
+            </div>
+            <button
+              className={styles.tweetButton}
+              onClick={this.onPostTweet}
+              disabled={!this.state.isTweetable}
+            >
+              Tweet
+            </button>
+          </div>
         </div>
       </div>
     );

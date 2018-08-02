@@ -19,13 +19,13 @@
 }
 
 .progress {
-  background: #fff;
   border-radius: 50%;
-  box-shadow: 0 0 0 3px #dadada inset;
-  height: 22px;
+  box-shadow: 0 0 0 2px #b7b7b7 inset;
+  height: 20px;
+  margin-right: 7px;
   overflow: hidden;
   position: relative;
-  width: 22px;
+  width: 20px;
   z-index: 1;
 }
 
@@ -37,13 +37,13 @@
   position: absolute;
   right: 0;
   top: 0;
-  transform-origin: left 11px;
+  transform-origin: left 10px;
   width: 50%;
   z-index: 2;
 
   .progressBar {
-    border-bottom-left-radius: 22px;
-    border-top-left-radius: 22px;
+    border-bottom-left-radius: 20px;
+    border-top-left-radius: 20px;
     border-right: 0;
     left: -100%;
     transform-origin: center right;
@@ -58,13 +58,13 @@
   overflow: hidden;
   position: absolute;
   top: 0;
-  transform-origin: right 11px;
+  transform-origin: right 10px;
   width: 50%;
   z-index: 3;
 
   .progressBar {
-    border-bottom-right-radius: 22px;
-    border-top-right-radius: 22px;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 20px;
     border-left: 0;
     left: 100%;
     transform-origin: center left;
@@ -72,12 +72,11 @@
 }
 
 .progressBar {
-    border: 3px solid #000;
+    border: 2px solid #000;
     height: 100%;
     position: absolute;
     top: 0;
     width: 100%;
-
 }
 
 .thumbnailContainer {
@@ -107,7 +106,6 @@
     width: 100%;
   }
 }
-
 
 .removeIcon {
   background: #000;
@@ -182,6 +180,11 @@
 
 .toggleButton {
   outline: none;
+}
+
+.rightItems {
+  align-items: center;
+  display: flex;
 }
 
 .tweetButton {
