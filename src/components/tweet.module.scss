@@ -49,6 +49,8 @@
 .textContainer {}
 
 .tweetText {
+  word-break: break-all;
+
   :global(.emoji) {
     height: 1em;
     margin: 0 .05em 0 .1em;

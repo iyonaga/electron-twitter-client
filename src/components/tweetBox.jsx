@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Picker } from 'emoji-mart';
 import twitterText from 'twitter-text';
+import autosize from 'autosize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage, faGrinAlt } from '@fortawesome/free-regular-svg-icons';
 import styles from './tweetBox.module.scss';
@@ -25,6 +26,7 @@ export default class TweetBox extends PureComponent {
 
   componentDidMount() {
     this.textArea.focus();
+    autosize(this.textArea);
     document.addEventListener('click', this.onClosePicker);
   }
 
@@ -145,6 +147,7 @@ export default class TweetBox extends PureComponent {
         client.postTweet(params).then(() => {
           this.setState({ images: [] });
           this.textArea.value = '';
+          autosize.update(this.textArea);
         });
       });
   }

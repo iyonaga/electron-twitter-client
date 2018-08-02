@@ -67,6 +67,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.1.0-11",
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
+    "autosize": "^4.0.2",
     "electron-json-storage": "^4.0.2",
     "emoji-mart": "^2.7.0",
     "moment": "^2.21.0",
