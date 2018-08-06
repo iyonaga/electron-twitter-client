@@ -1,3 +1,46 @@
 .container {
-  flex: 1;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+}
+
+.loading {
+  height: 100vh;
+  position: relative;
+  width: 100%;
+}
+
+.spinner {
+  animation: spinner .7s linear infinite;
+  bottom: 0;
+  border: 3px solid #ccc;
+  border-radius: 50%;
+  border-top-color: #50b2f5;
+  height: 40px;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40px;
+}
+
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+
+.error {
+  height: 100%;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+.errorMessage {
+  left: 50%;
+  padding: 15px;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
 }

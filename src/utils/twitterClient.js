@@ -136,9 +136,9 @@ export default class TwitterClient {
     });
   }
 
-  searchTweets(q, count) {
+  searchTweets(params) {
     return new Promise((resolve, reject) => {
-      this.client.get('search/tweets', { q, count }, (error, data) => {
+      this.client.get('search/tweets', params, (error, data) => {
         if (error) {
           reject(error);
         } else {

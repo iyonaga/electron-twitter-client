@@ -1,0 +1,33 @@
+.container {
+  background: #E8F5FD;
+  padding: 16px 24px;
+}
+
+.searchBox {
+  position: relative;
+}
+
+.input {
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 0 0 0 1px #A4D9F9;
+  padding: 5px 35px 5px 8px;
+  resize: none;
+  vertical-align: middle;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #A4D9F9;
+  }
+}
+
+.button {
+  color: #b7b7b7;
+  bottom: 0;
+  font-size: 1.2em;
+  outline: none;
+  position: absolute;
+  right: 10px;
+  top: 0;
+}

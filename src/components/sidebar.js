@@ -6,8 +6,21 @@ import styles from './sidebar.module.scss';
 
 export default class Sidebar extends PureComponent {
   static propTypes = {
-    toggleTweetBox: PropTypes.func.isRequired
+    closeBox: PropTypes.func.isRequired,
+    toggleTweetBox: PropTypes.func.isRequired,
+    toggleSearchBox: PropTypes.func.isRequired,
+    getHomeTimeline: PropTypes.func.isRequired
   };
+
+  constructor(props) {
+    super(props);
+    this.onHomeClick = ::this.onHomeClick;
+  }
+
+  onHomeClick() {
+    this.props.closeBox();
+    this.props.getHomeTimeline();
+  }
 
   render() {
     return (
@@ -18,12 +31,12 @@ export default class Sidebar extends PureComponent {
               <FontAwesomeIcon icon={faEdit} className="fa-fw" />
             </span>
           </li>
-          <li className={styles.menuItem}>
+          <li className={styles.menuItem} onClick={this.onHomeClick}>
             <span className={(styles.menuIcon, styles['menuIcon--home'])}>
               <FontAwesomeIcon icon={faHome} className="fa-fw" />
             </span>
           </li>
-          <li className={styles.menuItem}>
+          <li className={styles.menuItem} onClick={this.props.toggleSearchBox}>
             <span className={(styles.menuIcon, styles['menuIcon--search'])}>
               <FontAwesomeIcon icon={faSearch} className="fa-fw" />
             </span>
