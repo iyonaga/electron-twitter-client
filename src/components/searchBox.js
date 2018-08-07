@@ -6,17 +6,34 @@ import styles from './searchBox.module.scss';
 
 export default class SearchBox extends PureComponent {
   static propTypes = {
+    query: PropTypes.string.isRequired,
     searchTweets: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
+    this.state = {
+      inputText: ''
+    };
     this.onInputKeyDown = ::this.onInputKeyDown;
     this.onClick = ::this.onClick;
+    this.onInputChange = ::this.onInputChange;
   }
 
   componentDidMount() {
     this.input.focus();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      inputText: nextProps.query
+    });
+  }
+
+  onInputChange(e) {
+    this.setState({
+      inputText: e.target.value
+    });
   }
 
   onInputKeyDown(e) {
@@ -49,6 +66,8 @@ export default class SearchBox extends PureComponent {
               this.input = c;
             }}
             className={styles.input}
+            value={this.state.inputText}
+            onChange={this.onInputChange}
             onKeyDown={e => this.onInputKeyDown(e)}
           />
           <button className={styles.button} onClick={this.onClick}>

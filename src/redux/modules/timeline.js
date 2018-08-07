@@ -3,18 +3,21 @@ import { createActions, handleActions } from 'redux-actions';
 export const {
   fetchTweetsRequest,
   fetchTweetsSuccess,
-  fetchTweetsFailure
+  fetchTweetsFailure,
+  updateQuery
 } = createActions(
   'FETCH_TWEETS_REQUEST',
   'FETCH_TWEETS_SUCCESS',
-  'FETCH_TWEETS_FAILURE'
+  'FETCH_TWEETS_FAILURE',
+  'UPDATE_QUERY'
 );
 
 const initialState = {
   isFetching: false,
   tweets: [],
   isError: false,
-  error: {}
+  error: {},
+  query: ''
 };
 
 const homeTimelineReducer = handleActions(
@@ -36,6 +39,11 @@ const homeTimelineReducer = handleActions(
       isFetching: false,
       isError: action.error,
       error: action.payload
+    }),
+
+    [updateQuery]: (state, action) => ({
+      ...state,
+      query: action.payload
     })
   },
   initialState

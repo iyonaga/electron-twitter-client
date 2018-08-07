@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { shell } from 'electron';
 import Moment from 'moment';
 import { substr } from 'stringz';
 import { Player, BigPlayButton } from 'video-react';
@@ -12,7 +13,8 @@ import { createTwitterClient } from '../utils/twitterClient';
 
 export default class Tweet extends PureComponent {
   static propTypes = {
-    tweet: PropTypes.object.isRequired
+    tweet: PropTypes.object.isRequired,
+    searchHashtag: PropTypes.func.isRequired
   };
 
   static relativeTime(createdAt) {
@@ -124,19 +126,32 @@ export default class Tweet extends PureComponent {
     sortedEntities.forEach(entity => {
       switch (entity.type) {
         case 'hashtag':
-          text = `${substr(text, 0, entity.indices[0])}<a href="#" class=${
-            styles.link
-          }>#${entity.text}</a>${substr(text, entity.indices[1])}`;
+          text = `${substr(text, 0, entity.indices[0])}<a href="#${
+            entity.text
+          }" class="${styles.link} js-hashtag">#${entity.text}</a>${substr(
+            text,
+            entity.indices[1]
+          )}`;
           break;
         case 'url':
-          text = `${substr(text, 0, entity.indices[0])}<a href="#" class=${
-            styles.link
-          }>${entity.display_url}</a>${substr(text, entity.indices[1])}`;
+          text = `${substr(text, 0, entity.indices[0])}<a href="${
+            entity.url
+          }" class="${styles.link} js-link">${entity.display_url}</a>${substr(
+            text,
+            entity.indices[1]
+          )}`;
           break;
         case 'user_mention':
-          text = `${substr(text, 0, entity.indices[0])}<a href="#" class=${
+          text = `${substr(
+            text,
+            0,
+            entity.indices[0]
+          )}<a href="https://twitter.com/${entity.screen_name}" class="${
             styles.link
-          }>@${entity.screen_name}</a>${substr(text, entity.indices[1])}`;
+          } js-link">@${entity.screen_name}</a>${substr(
+            text,
+            entity.indices[1]
+          )}`;
           break;
         default:
           break;
@@ -150,12 +165,59 @@ export default class Tweet extends PureComponent {
     return twemoji.parse(tweet);
   }
 
+  static onLinkClick(e) {
+    const url = e.currentTarget.getAttribute('href');
+    e.preventDefault();
+    shell.openExternal(url);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       isFavorited: this.props.tweet.favorited
     };
     this.onFavorite = ::this.onFavorite;
+    this.onHashtagClick = ::this.onHashtagClick;
+  }
+
+  componentDidMount() {
+    const links = this.tweetText.querySelectorAll('.js-link');
+    const hashtags = this.tweetText.querySelectorAll('.js-hashtag');
+
+    if (links.length) {
+      for (let i = 0; i < links.length; i += 1) {
+        links[i].addEventListener('click', Tweet.onLinkClick, false);
+      }
+    }
+
+    if (hashtags.length) {
+      for (let i = 0; i < hashtags.length; i += 1) {
+        hashtags[i].addEventListener('click', this.onHashtagClick, false);
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    const links = this.tweetText.querySelectorAll('.js-link');
+    const hashtags = this.tweetText.querySelectorAll('.js-hashtag');
+
+    if (links.length) {
+      for (let i = 0; i < links.length; i += 1) {
+        links[i].removeEventListener('click', Tweet.onLinkClick);
+      }
+    }
+
+    if (hashtags.length) {
+      for (let i = 0; i < hashtags.length; i += 1) {
+        hashtags[i].removeEventListener('click', this.onHashtagClick);
+      }
+    }
+  }
+
+  onHashtagClick(e) {
+    const hashtag = e.target.getAttribute('href');
+    e.preventDefault();
+    this.props.searchHashtag(hashtag);
   }
 
   onFavorite() {
@@ -183,7 +245,11 @@ export default class Tweet extends PureComponent {
     return (
       <div>
         {this.renderRetweetedText()}
-        <a href="#dummy" className={styles.profile}>
+        <a
+          href={`https://twitter.com/${user.screen_name}`}
+          className={styles.profile}
+          onClick={Tweet.onLinkClick}
+        >
           <img
             className={styles['profile--userIcon']}
             src={Tweet.biggerProfileImage(user.profile_image_url)}
@@ -230,6 +296,9 @@ export default class Tweet extends PureComponent {
         <div className={styles.textContainer}>
           <div
             className={styles.tweetText}
+            ref={c => {
+              this.tweetText = c;
+            }}
             dangerouslySetInnerHTML={{
               // __html: Tweet.linkedText(tweet)
               __html: Tweet.applyEmoji(Tweet.linkedText(tweet))

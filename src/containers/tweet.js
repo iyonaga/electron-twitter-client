@@ -1,25 +1,28 @@
 import { connect } from 'react-redux';
+import Tweet from '../components/tweet';
 import { createTwitterClient } from '../utils/twitterClient';
-import SearchBox from '../components/searchBox';
 import {
   fetchTweetsRequest,
   fetchTweetsSuccess,
-  fetchTweetsFailure
+  fetchTweetsFailure,
+  updateQuery
 } from '../redux/modules/timeline';
+import { toggleSearchBox } from '../redux/modules/sidebar';
 
-function mapStateToProps(state) {
-  return {
-    query: state.timelineReducer.query
-  };
+function mapStateToProps() {
+  return {};
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    searchTweets(query) {
+    searchHashtag(hashtag) {
+      dispatch(toggleSearchBox(true));
+      dispatch(updateQuery(hashtag));
+
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
-          .searchTweets({ q: query, count: 20, tweet_mode: 'extended' })
+          .searchTweets({ q: hashtag, count: 20, tweet_mode: 'extended' })
           .then(res => {
             dispatch(fetchTweetsSuccess(res.statuses));
           })
@@ -31,4 +34,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBox);
+export default connect(mapStateToProps, mapDispatchToProps)(Tweet);
