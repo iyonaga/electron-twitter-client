@@ -126,7 +126,7 @@ export default class TwitterClient {
 
   getFavoritesList(params) {
     return new Promise((resolve, reject) => {
-      this.client('favorites/list', params, (error, data) => {
+      this.client.get('favorites/list', params, (error, data) => {
         if (error) {
           reject(error);
         } else {

@@ -22,6 +22,14 @@ function mapDispatchToProps(dispatch) {
       dispatch(toggleSearchBox(false));
     },
 
+    toggleTweetBox() {
+      dispatch(toggleTweetBox());
+    },
+
+    toggleSearchBox() {
+      dispatch(toggleSearchBox());
+    },
+
     getHomeTimeline() {
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
@@ -36,12 +44,18 @@ function mapDispatchToProps(dispatch) {
       });
     },
 
-    toggleTweetBox() {
-      dispatch(toggleTweetBox());
-    },
-
-    toggleSearchBox() {
-      dispatch(toggleSearchBox());
+    getFavoritesList() {
+      createTwitterClient().then(client => {
+        dispatch(fetchTweetsRequest());
+        client
+          .getFavoritesList({ tweet_mode: 'extended' })
+          .then(tweets => {
+            dispatch(fetchTweetsSuccess(tweets));
+          })
+          .catch(error => {
+            dispatch(fetchTweetsFailure(error));
+          });
+      });
     }
   };
 }
