@@ -162,7 +162,7 @@ export default class TwitterClient {
     });
   }
 
-  getHomeTimeLine(params) {
+  getHomeTimeline(params) {
     return new Promise((resolve, reject) => {
       this.client.get('statuses/home_timeline', params, (error, data) => {
         if (error) {
@@ -174,7 +174,7 @@ export default class TwitterClient {
     });
   }
 
-  getMentionsTimeLine(params) {
+  getMentionsTimeline(params) {
     return new Promise((resolve, reject) => {
       this.client.get('statuses/mentions_timeline', params, (error, data) => {
         if (error) {

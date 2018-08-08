@@ -25,7 +25,7 @@ function mapDispatchToProps(dispatch) {
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
-          .getHomeTimeLine({ tweet_mode: 'extended' })
+          .getHomeTimeline({ tweet_mode: 'extended' })
           .then(tweets => {
             dispatch(fetchTweetsSuccess(tweets));
           })

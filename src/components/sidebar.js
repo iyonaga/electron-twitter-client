@@ -6,7 +6,8 @@ import {
   faSearch,
   faHome,
   faHeart,
-  faListUl
+  faListUl,
+  faAt
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './sidebar.module.scss';
 
@@ -17,7 +18,8 @@ export default class Sidebar extends PureComponent {
     toggleSearchBox: PropTypes.func.isRequired,
     toggleListsSelectBox: PropTypes.func.isRequired,
     getHomeTimeline: PropTypes.func.isRequired,
-    getFavoritesList: PropTypes.func.isRequired
+    getFavoritesList: PropTypes.func.isRequired,
+    getMentionsTimeline: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -46,17 +48,17 @@ export default class Sidebar extends PureComponent {
             </span>
           </li>
           <li className={styles.menuItem} onClick={this.props.toggleSearchBox}>
-            <span className={(styles.menuIcon, styles['menuIcon--search'])}>
+            <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faSearch} className="fa-fw" />
             </span>
           </li>
           <li className={styles.menuItem} onClick={this.onHomeClick}>
-            <span className={(styles.menuIcon, styles['menuIcon--home'])}>
+            <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faHome} className="fa-fw" />
             </span>
           </li>
           <li className={styles.menuItem} onClick={this.onFavoriteClick}>
-            <span className={(styles.menuIcon, styles['menuIcon--favorite'])}>
+            <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faHeart} className="fa-fw" />
             </span>
           </li>
@@ -64,8 +66,16 @@ export default class Sidebar extends PureComponent {
             className={styles.menuItem}
             onClick={this.props.toggleListsSelectBox}
           >
-            <span className={(styles.menuIcon, styles['menuIcon--list'])}>
+            <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faListUl} className="fa-fw" />
+            </span>
+          </li>
+          <li
+            className={styles.menuItem}
+            onClick={this.props.getMentionsTimeline}
+          >
+            <span className={styles.menuIcon}>
+              <FontAwesomeIcon icon={faAt} className="fa-fw" />
             </span>
           </li>
         </ul>
