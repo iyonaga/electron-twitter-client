@@ -185,6 +185,30 @@ export default class TwitterClient {
       });
     });
   }
+
+  getMyLists(params) {
+    return new Promise((resolve, reject) => {
+      this.client.get('lists/list', params, (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  getListsStatuses(params) {
+    return new Promise((resolve, reject) => {
+      this.client.get('lists/statuses', params, (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
 }
 
 export function createTwitterClient() {
@@ -194,6 +218,18 @@ export function createTwitterClient() {
         reject(new Error(error));
       } else {
         resolve(new TwitterClient(data));
+      }
+    });
+  });
+}
+
+export function getUser() {
+  return new Promise((resolve, reject) => {
+    storage.get('accounts', (error, data) => {
+      if (error || Object.keys(data).length === 0) {
+        reject(new Error(error));
+      } else {
+        resolve(data.user);
       }
     });
   });

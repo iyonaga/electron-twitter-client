@@ -6,12 +6,17 @@ import {
   fetchTweetsSuccess,
   fetchTweetsFailure
 } from '../redux/modules/timeline';
-import { toggleTweetBox, toggleSearchBox } from '../redux/modules/sidebar';
+import {
+  toggleTweetBox,
+  toggleSearchBox,
+  toggleListsSelectBox
+} from '../redux/modules/sidebar';
 
 function mapStateToProps(state) {
   return {
     isTweetBoxOpen: state.sidebarReducer.isTweetBoxOpen,
-    isSearchBoxOpen: state.sidebarReducer.isSearchBoxOpen
+    isSearchBoxOpen: state.sidebarReducer.isSearchBoxOpen,
+    isListsSelectBoxOpen: state.sidebarReducer.isListsSelectBoxOpen
   };
 }
 
@@ -20,6 +25,7 @@ function mapDispatchToProps(dispatch) {
     closeBox() {
       dispatch(toggleTweetBox(false));
       dispatch(toggleSearchBox(false));
+      dispatch(toggleListsSelectBox(false));
     },
 
     toggleTweetBox() {
@@ -28,6 +34,10 @@ function mapDispatchToProps(dispatch) {
 
     toggleSearchBox() {
       dispatch(toggleSearchBox());
+    },
+
+    toggleListsSelectBox() {
+      dispatch(toggleListsSelectBox());
     },
 
     getHomeTimeline() {

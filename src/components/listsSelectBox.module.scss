@@ -1,0 +1,54 @@
+.container {
+  background: #E8F5FD;
+  padding: 16px 24px;
+}
+
+.selectWrapper {
+  background: #fff;
+  position: relative;
+
+  &:before {
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #4AB3F4;
+    content: "";
+    height: 0;
+    padding: 0;
+    position: absolute;
+    right: 0.8em;
+    top: 0.8em;
+    width: 0;
+    z-index: 1;
+  }
+
+  &--noLists {
+    &:before {
+      content: none;
+    }
+
+    .select {
+      &:focus {
+        box-shadow: 0 0 0 1px #A4D9F9;
+      }
+    }
+  }
+}
+
+.select {
+  background: transparent;
+  border-radius: 7px;
+  box-shadow: 0 0 0 1px #A4D9F9;
+  padding: 5px 35px 5px 8px;
+  position: relative;
+  width: 100%;
+  z-index: 10;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #A4D9F9;
+  }
+}
+
+.placeholder {
+  display: none;
+}

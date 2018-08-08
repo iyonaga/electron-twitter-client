@@ -14,7 +14,8 @@ function mapStateToProps(state) {
     isError: state.timelineReducer.isError,
     error: state.timelineReducer.error,
     isTweetBoxOpen: state.sidebarReducer.isTweetBoxOpen,
-    isSearchBoxOpen: state.sidebarReducer.isSearchBoxOpen
+    isSearchBoxOpen: state.sidebarReducer.isSearchBoxOpen,
+    isListsSelectBoxOpen: state.sidebarReducer.isListsSelectBoxOpen
   };
 }
 

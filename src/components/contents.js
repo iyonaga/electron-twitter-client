@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import TweetBox from './tweetBox';
 import SearchBox from '../containers/searchBox';
+import ListsSelectBox from '../containers/listsSelectBox';
 import Tweet from '../containers/tweet';
 import styles from './contents.module.scss';
 
@@ -15,7 +16,8 @@ export default class Contents extends Component {
     isError: PropTypes.bool.isRequired,
     error: PropTypes.object.isRequired,
     isTweetBoxOpen: PropTypes.bool.isRequired,
-    isSearchBoxOpen: PropTypes.bool.isRequired
+    isSearchBoxOpen: PropTypes.bool.isRequired,
+    isListsSelectBoxOpen: PropTypes.bool.isRequired
   };
 
   componentDidMount() {
@@ -48,6 +50,7 @@ export default class Contents extends Component {
       <div className={styles.container}>
         {this.props.isTweetBoxOpen && <TweetBox />}
         {this.props.isSearchBoxOpen && <SearchBox />}
+        {this.props.isListsSelectBoxOpen && <ListsSelectBox />}
         {this.props.isFetching ? (
           <div className={styles.loading}>
             <div className={styles.spinner} />

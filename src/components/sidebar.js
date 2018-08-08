@@ -5,7 +5,8 @@ import {
   faEdit,
   faSearch,
   faHome,
-  faHeart
+  faHeart,
+  faListUl
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './sidebar.module.scss';
 
@@ -14,6 +15,7 @@ export default class Sidebar extends PureComponent {
     closeBox: PropTypes.func.isRequired,
     toggleTweetBox: PropTypes.func.isRequired,
     toggleSearchBox: PropTypes.func.isRequired,
+    toggleListsSelectBox: PropTypes.func.isRequired,
     getHomeTimeline: PropTypes.func.isRequired,
     getFavoritesList: PropTypes.func.isRequired
   };
@@ -56,6 +58,14 @@ export default class Sidebar extends PureComponent {
           <li className={styles.menuItem} onClick={this.onFavoriteClick}>
             <span className={(styles.menuIcon, styles['menuIcon--favorite'])}>
               <FontAwesomeIcon icon={faHeart} className="fa-fw" />
+            </span>
+          </li>
+          <li
+            className={styles.menuItem}
+            onClick={this.props.toggleListsSelectBox}
+          >
+            <span className={(styles.menuIcon, styles['menuIcon--list'])}>
+              <FontAwesomeIcon icon={faListUl} className="fa-fw" />
             </span>
           </li>
         </ul>
