@@ -174,13 +174,19 @@ export default class Tweet extends PureComponent {
 
   constructor(props) {
     super(props);
+
+    const tweet = this.props.tweet.retweeted_status
+      ? this.props.tweet.retweeted_status
+      : this.props.tweet;
+
     this.state = {
-      retweetCount: this.props.tweet.retweet_count,
-      favoriteCount: this.props.tweet.favorite_count,
-      isRetweeted: this.props.tweet.retweeted,
-      isFavorited: this.props.tweet.favorited,
+      retweetCount: tweet.retweet_count,
+      favoriteCount: tweet.favorite_count,
+      isRetweeted: tweet.retweeted,
+      isFavorited: tweet.favorited,
       isRetweetBoxOpen: false
     };
+
     this.onRetweetClick = ::this.onRetweetClick;
     this.onFavoriteClick = ::this.onFavoriteClick;
     this.onHashtagClick = ::this.onHashtagClick;
