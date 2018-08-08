@@ -8,8 +8,9 @@ import twemoji from 'twemoji';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRetweet } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
-import styles from './tweet.module.scss';
 import { createTwitterClient } from '../utils/twitterClient';
+import RetweetBox from './retweetBox';
+import styles from './tweet.module.scss';
 
 export default class Tweet extends PureComponent {
   static propTypes = {
@@ -174,10 +175,16 @@ export default class Tweet extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isFavorited: this.props.tweet.favorited
+      retweetCount: this.props.tweet.retweet_count,
+      favoriteCount: this.props.tweet.favorite_count,
+      isRetweeted: this.props.tweet.retweeted,
+      isFavorited: this.props.tweet.favorited,
+      isRetweetBoxOpen: false
     };
-    this.onFavorite = ::this.onFavorite;
+    this.onRetweetClick = ::this.onRetweetClick;
+    this.onFavoriteClick = ::this.onFavoriteClick;
     this.onHashtagClick = ::this.onHashtagClick;
+    this.closeRetweetBox = ::this.closeRetweetBox;
   }
 
   componentDidMount() {
@@ -220,7 +227,24 @@ export default class Tweet extends PureComponent {
     this.props.searchHashtag(hashtag);
   }
 
-  onFavorite() {
+  onRetweetClick() {
+    if (this.state.isRetweeted) {
+      createTwitterClient()
+        .then(client => client.postUnRetweet(this.props.tweet.id_str))
+        .then(() => {
+          this.setState({
+            retweetCount: (this.state.retweetCount -= 1),
+            isRetweeted: false
+          });
+        });
+    } else {
+      this.setState({
+        isRetweetBoxOpen: !this.state.isRetweetBoxOpen
+      });
+    }
+  }
+
+  onFavoriteClick() {
     const { tweet } = this.props;
 
     createTwitterClient()
@@ -232,9 +256,18 @@ export default class Tweet extends PureComponent {
       })
       .then(res => {
         this.setState({
+          favoriteCount: res.favorite_count,
           isFavorited: res.favorited
         });
       });
+  }
+
+  closeRetweetBox(res) {
+    this.setState({
+      isRetweetBoxOpen: false,
+      retweetCount: res.retweet_count,
+      isRetweeted: res.retweeted
+    });
   }
 
   isRetweet() {
@@ -300,7 +333,6 @@ export default class Tweet extends PureComponent {
               this.tweetText = c;
             }}
             dangerouslySetInnerHTML={{
-              // __html: Tweet.linkedText(tweet)
               __html: Tweet.applyEmoji(Tweet.linkedText(tweet))
             }}
           />
@@ -311,20 +343,25 @@ export default class Tweet extends PureComponent {
           <ul className={styles.actions}>
             <li
               className={`${styles.actionItem} ${
-                tweet.retweeted ? styles['actionItem--retweeted'] : ''
+                this.state.isRetweeted ? styles['actionItem--retweeted'] : ''
               }`}
+              onClick={this.onRetweetClick}
             >
               <FontAwesomeIcon icon={faRetweet} />{' '}
-              <span className={styles.actionCount}>{tweet.retweet_count}</span>
+              <span className={styles.actionCount}>
+                {this.state.retweetCount}
+              </span>
             </li>
             <li
               className={`${styles.actionItem} ${
                 this.state.isFavorited ? styles['actionItem--favorited'] : ''
               }`}
-              onClick={this.onFavorite}
+              onClick={this.onFavoriteClick}
             >
               <FontAwesomeIcon icon={faHeart} />{' '}
-              <span className={styles.actionCount}>{tweet.favorite_count}</span>
+              <span className={styles.actionCount}>
+                {this.state.favoriteCount}
+              </span>
             </li>
           </ul>
         </div>
@@ -336,6 +373,12 @@ export default class Tweet extends PureComponent {
     return (
       <li className={styles.wrapper}>
         <div className={styles.content}>{this.renderContent()}</div>
+        {this.state.isRetweetBoxOpen && (
+          <RetweetBox
+            tweet={this.props.tweet}
+            closeRetweetBox={this.closeRetweetBox}
+          />
+        )}
       </li>
     );
   }

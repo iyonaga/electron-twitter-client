@@ -165,23 +165,6 @@
   }
 }
 
-.emojiPicker {
-  color: #50b2f5;
-  line-height: 1;
-  position: relative;
-
-  :global(.emoji-mart) {
-    left: 0;
-    position: absolute;
-    top: 29px;
-    z-index: 10;
-  }
-}
-
-.toggleButton {
-  outline: none;
-}
-
 .rightItems {
   align-items: center;
   display: flex;
