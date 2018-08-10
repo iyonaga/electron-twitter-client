@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { createTwitterClient, getUser } from '../utils/twitterClient';
+import { createTwitterClient, getCurrentUser } from '../utils/twitterClient';
 import styles from './listsSelectBox.module.scss';
 
 export default class ListsSelectBox extends PureComponent {
@@ -18,7 +18,7 @@ export default class ListsSelectBox extends PureComponent {
   }
 
   componentDidMount() {
-    getUser()
+    getCurrentUser()
       .then(user =>
         createTwitterClient().then(client =>
           client.getMyLists({ user_id: user.id_str })

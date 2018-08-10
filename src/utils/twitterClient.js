@@ -148,6 +148,34 @@ export default class TwitterClient {
     });
   }
 
+  createFollow(id) {
+    return new Promise((resolve, reject) => {
+      this.client.post('friendships/create', { user_id: id }, (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  destroyFollow(id) {
+    return new Promise((resolve, reject) => {
+      this.client.post(
+        'friendships/destroy',
+        { user_id: id },
+        (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(data);
+          }
+        }
+      );
+    });
+  }
+
   userStream(callback) {
     const stream = this.client.stream('user');
     stream.on('tweet', tweet => {
@@ -223,7 +251,7 @@ export function createTwitterClient() {
   });
 }
 
-export function getUser() {
+export function getCurrentUser() {
   return new Promise((resolve, reject) => {
     storage.get('accounts', (error, data) => {
       if (error || Object.keys(data).length === 0) {

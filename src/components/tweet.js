@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { shell } from 'electron';
-import Moment from 'moment';
 import { substr } from 'stringz';
 import { Player, BigPlayButton } from 'video-react';
 import twemoji from 'twemoji';
@@ -9,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRetweet } from '@fortawesome/free-solid-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 import { createTwitterClient } from '../utils/twitterClient';
+import TweetHeader from './tweetHeader';
 import RetweetBox from './retweetBox';
 import styles from './tweet.module.scss';
 
@@ -17,14 +17,6 @@ export default class Tweet extends PureComponent {
     tweet: PropTypes.object.isRequired,
     searchHashtag: PropTypes.func.isRequired
   };
-
-  static relativeTime(createdAt) {
-    return Moment(new Date(createdAt)).fromNow();
-  }
-
-  static biggerProfileImage(url) {
-    return url.replace(/_normal/, '_bigger');
-  }
 
   static renderFirstImage(url) {
     return (
@@ -276,50 +268,6 @@ export default class Tweet extends PureComponent {
     });
   }
 
-  isRetweet() {
-    return !!this.props.tweet.retweeted_status;
-  }
-
-  renderHeader(tweet, user) {
-    return (
-      <div>
-        {this.renderRetweetedText()}
-        <a
-          href={`https://twitter.com/${user.screen_name}`}
-          className={styles.profile}
-          onClick={Tweet.onLinkClick}
-        >
-          <img
-            className={styles['profile--userIcon']}
-            src={Tweet.biggerProfileImage(user.profile_image_url)}
-            alt=""
-          />
-          <div className={styles['profile--nameGroup']}>
-            <strong className={styles['profile--userName']}>{user.name}</strong>
-            <span className={styles['profile--screenName']}>
-              @{user.screen_name}
-            </span>
-          </div>
-        </a>
-        <div className={styles.time}>
-          {Tweet.relativeTime(tweet.created_at)}
-        </div>
-      </div>
-    );
-  }
-
-  renderRetweetedText() {
-    const { tweet } = this.props;
-    if (!this.isRetweet()) return false;
-    return (
-      <div>
-        <p className={styles.retweetText}>
-          <FontAwesomeIcon icon={faRetweet} /> Retweeted by {tweet.user.name}
-        </p>
-      </div>
-    );
-  }
-
   renderContent() {
     const { tweet } = this.props;
     return tweet.retweeted_status
@@ -330,8 +278,11 @@ export default class Tweet extends PureComponent {
   renderTweet(tweet, user) {
     return (
       <div>
-        <div className={styles.header}>{this.renderHeader(tweet, user)}</div>
-
+        <TweetHeader
+          tweet={this.props.tweet}
+          user={user}
+          onLinkClick={Tweet.onLinkClick}
+        />
         <div className={styles.textContainer}>
           <div
             className={styles.tweetText}

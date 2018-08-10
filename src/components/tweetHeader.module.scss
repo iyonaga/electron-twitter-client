@@ -1,0 +1,65 @@
+.container {}
+
+.retweetText {
+  color: #999;
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+}
+
+.profile {
+  left: -62px;
+  position: relative;
+  padding-left: 62px;
+}
+
+.profileLink {
+  display: inline-block;
+  position: relative;
+
+  &:hover {
+    color: #0070c9;
+
+    .userName {
+      text-decoration: underline;
+    }
+  }
+}
+
+.userIcon {
+  border-radius: 100%;
+  height: 48px;
+  left: -62px;
+  position: absolute;
+  width: 48px;
+}
+
+.userNameContainer {}
+
+.userName {}
+
+.screenName {
+  color: #999;
+  margin-left: 1px;
+}
+
+.time {
+  color: #999;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.profileCardContainer {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  transition: all .2s;
+  width: 280px;
+  z-index: 100;
+
+  &--hover,
+  &:hover {
+    opacity: 1;
+    transition-duration: .4s;
+    visibility: visible;
+  }
+}
