@@ -306,7 +306,7 @@ export default class Tweet extends PureComponent {
             >
               <FontAwesomeIcon icon={faRetweet} />{' '}
               <span className={styles.actionCount}>
-                {this.state.retweetCount}
+                {this.state.retweetCount.toLocaleString()}
               </span>
             </li>
             <li
@@ -317,7 +317,7 @@ export default class Tweet extends PureComponent {
             >
               <FontAwesomeIcon icon={faHeart} />{' '}
               <span className={styles.actionCount}>
-                {this.state.favoriteCount}
+                {this.state.favoriteCount.toLocaleString()}
               </span>
             </li>
           </ul>
