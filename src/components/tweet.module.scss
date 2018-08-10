@@ -137,34 +137,3 @@
 .imageItem {}
 
 .videoContainer {}
-
-.footer {}
-
-.actions {
-  display: flex;
-  margin-top: 10px;
-}
-
-.actionItem {
-  align-items: center;
-  color: #999;
-  display: flex;
-
-  & + .actionItem {
-    margin-left: 20px;
-  }
-
-  &--retweeted {
-    color: #30a564;
-  }
-
-  &--favorited {
-    color: #ce2070;
-  }
-}
-
-.actionCount {
-  font-size: 1.3rem;
-  font-weight: 500;
-  margin-left: 5px;
-}
