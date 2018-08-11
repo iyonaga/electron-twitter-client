@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { shell } from 'electron';
-import { substr } from 'stringz';
 import { Player, BigPlayButton } from 'video-react';
 import twemoji from 'twemoji';
 import TweetHeader from './tweetHeader';
@@ -84,11 +83,11 @@ export default class Tweet extends PureComponent {
   }
 
   static linkedText(tweet) {
-    let text = substr(
-      tweet.full_text,
-      tweet.display_text_range[0],
-      tweet.display_text_range[1]
-    );
+    const isReply = !!tweet.in_reply_to_status_id;
+
+    let text = [...tweet.full_text]
+      .slice(tweet.display_text_range[0], tweet.display_text_range[1])
+      .join('');
 
     const hashtags = tweet.entities.hashtags.map(hashtag => ({
       ...hashtag,
@@ -115,33 +114,43 @@ export default class Tweet extends PureComponent {
     sortedEntities.forEach(entity => {
       switch (entity.type) {
         case 'hashtag':
-          text = `${substr(text, 0, entity.indices[0])}<a href="#${
+          text = `${[...text].slice(0, entity.indices[0]).join('')}<a href="#${
             entity.text
-          }" class="${styles.link} js-hashtag">#${entity.text}</a>${substr(
-            text,
-            entity.indices[1]
-          )}`;
+          }" class="${styles.link} js-hashtag">#${entity.text}</a>${[...text]
+            .slice(entity.indices[1])
+            .join('')}`;
           break;
+
         case 'url':
-          text = `${substr(text, 0, entity.indices[0])}<a href="${
+          text = `${[...text].slice(0, entity.indices[0]).join('')}<a href="${
             entity.url
-          }" class="${styles.link} js-link">${entity.display_url}</a>${substr(
-            text,
-            entity.indices[1]
-          )}`;
+          }" class="${styles.link} js-link">${entity.display_url}</a>${[...text]
+            .slice(entity.indices[1])
+            .join('')}`;
           break;
+
         case 'user_mention':
-          text = `${substr(
-            text,
-            0,
-            entity.indices[0]
-          )}<a href="https://twitter.com/${entity.screen_name}" class="${
-            styles.link
-          } js-link">@${entity.screen_name}</a>${substr(
-            text,
-            entity.indices[1]
-          )}`;
+          if (isReply && entity.id_str === tweet.in_reply_to_user_id_str) {
+            text = `<span class="${
+              styles.replyText
+            }">Replying to <a href="https://twitter.com/${
+              tweet.in_reply_to_screen_name
+            }" class="${styles.link} js-link">@${
+              tweet.in_reply_to_screen_name
+            }</a></span><br>${text}`;
+          } else {
+            text = `${[...text]
+              .slice(0, entity.indices[0])
+              .join('')}<a href="https://twitter.com/${
+              entity.screen_name
+            }" class="${styles.link} js-link">@${entity.screen_name}</a>${[
+              ...text
+            ]
+              .slice(entity.indices[1])
+              .join('')}`;
+          }
           break;
+
         default:
           break;
       }

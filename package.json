@@ -80,7 +80,6 @@
     "redux-actions": "^2.2.1",
     "redux-saga": "^0.16.0",
     "ress": "^1.2.2",
-    "stringz": "^0.4.0",
     "twemoji": "^11.0.0",
     "twit": "^2.2.9",
     "twitter-text": "^2.0.4",
