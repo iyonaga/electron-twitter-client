@@ -143,7 +143,7 @@ export default class TweetHeader extends PureComponent {
     return (
       <div className={styles.container}>
         {this.renderRetweetedText()}
-        <div className={styles.profile}>
+        <div className={styles.content}>
           <a
             href={`https://twitter.com/${user.screen_name}`}
             className={styles.profileLink}

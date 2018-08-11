@@ -6,15 +6,18 @@
   margin-bottom: 4px;
 }
 
-.profile {
+.content {
+  box-sizing: content-box;
+  display: flex;
   left: -62px;
   position: relative;
   padding-left: 62px;
+  width: 100%;
 }
 
 .profileLink {
   display: inline-block;
-  position: relative;
+  overflow: hidden;
 
   &:hover {
     color: #0070c9;
@@ -28,12 +31,16 @@
 .userIcon {
   border-radius: 100%;
   height: 48px;
-  left: -62px;
+  left: 0;
   position: absolute;
   width: 48px;
 }
 
-.userNameContainer {}
+.userNameContainer {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .userName {}
 
@@ -46,6 +53,7 @@
   color: #999;
   display: inline-block;
   margin-left: 10px;
+  white-space: nowrap;
 }
 
 .profileCardContainer {
