@@ -16,7 +16,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     searchTweets(query) {
-      createTwitterClient().then(client => {
+      return createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
           .searchTweets({ q: query, count: 20, tweet_mode: 'extended' })
