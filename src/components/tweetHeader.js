@@ -11,7 +11,8 @@ export default class TweetHeader extends PureComponent {
   static propTypes = {
     tweet: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    onLinkClick: PropTypes.func.isRequired
+    onLinkClick: PropTypes.func.isRequired,
+    onHashtagClick: PropTypes.func.isRequired
   };
 
   static biggerProfileImage(url) {
@@ -185,6 +186,8 @@ export default class TweetHeader extends PureComponent {
             <ProfileCard
               user={user}
               placement={this.state.profileCardPlacement}
+              onLinkClick={this.props.onLinkClick}
+              onHashtagClick={this.props.onHashtagClick}
             />
           </div>
         </div>

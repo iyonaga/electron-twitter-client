@@ -1,83 +1,16 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import twitterText from 'twitter-text';
-import twemoji from 'twemoji';
 import { createTwitterClient } from '../utils/twitterClient';
 import styles from './profileCard.module.scss';
 
 export default class ProfileCard extends PureComponent {
   static propTypes = {
     user: PropTypes.object.isRequired,
-    placement: PropTypes.string.isRequired
+    placement: PropTypes.string.isRequired,
+    onLinkClick: PropTypes.func.isRequired,
+    onHashtagClick: PropTypes.func.isRequired
   };
-
-  static linkedText(user) {
-    let { description } = user;
-
-    const entities = twitterText.extractEntitiesWithIndices(user.description, {
-      extractUrlsWithoutProtocol: false
-    });
-
-    const newEntities = entities.map(entity => {
-      if (entity.hashtag) {
-        return {
-          ...entity,
-          type: 'hashtag'
-        };
-      } else if (entity.url) {
-        return {
-          ...entity,
-          type: 'url'
-        };
-      } else if (entity.screenName) {
-        return {
-          ...entity,
-          type: 'user_mention'
-        };
-      }
-      return { ...entity };
-    });
-
-    const sortedEntities =
-      newEntities.length > 0
-        ? newEntities.sort((a, b) => b.indices[0] - a.indices[0])
-        : [];
-
-    sortedEntities.forEach(entity => {
-      switch (entity.type) {
-        case 'hashtag':
-          description = `${description.substring(
-            0,
-            entity.indices[0]
-          )}<a href="#${entity.hashtag}" class="${styles.link} js-hashtag">#${
-            entity.hashtag
-          }</a>${description.substring(entity.indices[1])}`;
-          break;
-        case 'url':
-          description = `${description.substring(
-            0,
-            entity.indices[0]
-          )}<a href="${entity.url}" class="${styles.link} js-link">${
-            entity.url
-          }</a>${description.substring(entity.indices[1])}`;
-          break;
-        case 'user_mention':
-          description = `${description.substring(
-            0,
-            entity.indices[0]
-          )}<a href="https://twitter.com/${entity.screenName}" class="${
-            styles.link
-          } js-link">@${entity.screenName}</a>${description.substring(
-            entity.indices[1]
-          )}`;
-          break;
-        default:
-          break;
-      }
-    });
-
-    return description;
-  }
 
   constructor(props) {
     super(props);
@@ -88,6 +21,8 @@ export default class ProfileCard extends PureComponent {
     this.onMouseOver = ::this.onMouseOver;
     this.onMouseLeave = ::this.onMouseLeave;
     this.onFollowButtonClick = ::this.onFollowButtonClick;
+    this.linkedText = ::this.linkedText;
+    this.renderLink = ::this.renderLink;
   }
 
   componentWillMount() {
@@ -120,6 +55,107 @@ export default class ProfileCard extends PureComponent {
           isFollowing: !res.following
         });
       });
+  }
+
+  linkedText(user) {
+    let { description } = user;
+
+    const entities = twitterText.extractEntitiesWithIndices(user.description, {
+      extractUrlsWithoutProtocol: false
+    });
+
+    if (!entities.length) {
+      return description;
+    }
+
+    const newEntities = entities.map(entity => {
+      if (entity.hashtag) {
+        return {
+          ...entity,
+          type: 'hashtag'
+        };
+      } else if (entity.url) {
+        return {
+          ...entity,
+          type: 'url'
+        };
+      } else if (entity.screenName) {
+        return {
+          ...entity,
+          type: 'user_mention'
+        };
+      }
+      return { ...entity };
+    });
+
+    const sortedEntities =
+      newEntities.length > 0
+        ? newEntities.sort((a, b) => b.indices[0] - a.indices[0])
+        : [];
+
+    const linkedText = [];
+
+    sortedEntities.forEach(entity => {
+      linkedText.push(
+        <Fragment key={entity.indices[0]}>
+          {this.renderLink(entity)}
+          {description.substring(entity.indices[1])}
+        </Fragment>
+      );
+
+      description = description.substring(0, entity.indices[0]);
+    });
+
+    linkedText.push(description);
+
+    return linkedText.reverse();
+  }
+
+  renderLink(entity) {
+    let link = '';
+
+    switch (entity.type) {
+      case 'hashtag':
+        link = (
+          <a
+            href={`#${entity.hashtag}`}
+            className={styles.link}
+            onClick={this.props.onHashtagClick}
+          >
+            #{entity.hashtag}
+          </a>
+        );
+        break;
+
+      case 'url':
+        link = (
+          <a
+            href={entity.url}
+            className={styles.link}
+            onClick={this.props.onLinkClick}
+          >
+            {entity.url}
+          </a>
+        );
+        break;
+
+      case 'user_mention':
+        link = (
+          <a
+            href={`https://twitter.com/${entity.screenName}`}
+            className={styles.link}
+            onClick={this.props.onLinkClick}
+          >
+            @{entity.screenName}
+          </a>
+        );
+        break;
+
+      default:
+        break;
+    }
+
+    return link;
   }
 
   renderArrow(user) {
@@ -183,16 +219,15 @@ export default class ProfileCard extends PureComponent {
                 {this.state.followButtonText}
               </button>
             </div>
-            <div className={styles.userNameWrapper}>
+            <a
+              href={`https://twitter.com/${user.screen_name}`}
+              className={`${styles.userNameWrapper} 'js-link'`}
+              onClick={this.props.onLinkClick}
+            >
               <strong className={styles.userName}>{user.name}</strong>
               <span className={styles.screenName}>@{user.screen_name}</span>
-            </div>
-            <div
-              className={styles.description}
-              dangerouslySetInnerHTML={{
-                __html: twemoji.parse(ProfileCard.linkedText(user))
-              }}
-            />
+            </a>
+            <div className={styles.description}>{this.linkedText(user)}</div>
           </div>
         </div>
 

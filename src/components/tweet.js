@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { shell } from 'electron';
 import { Player, BigPlayButton } from 'video-react';
@@ -82,7 +82,29 @@ export default class Tweet extends PureComponent {
     );
   }
 
-  static linkedText(tweet) {
+  static onLinkClick(e) {
+    const url = e.currentTarget.getAttribute('href');
+    e.preventDefault();
+    shell.openExternal(url);
+  }
+
+  constructor(props) {
+    super(props);
+    this.linkedText = ::this.linkedText;
+    this.onHashtagClick = ::this.onHashtagClick;
+  }
+
+  componentDidMount() {
+    twemoji.parse(this.content);
+  }
+
+  onHashtagClick(e) {
+    const hashtag = e.target.getAttribute('href');
+    e.preventDefault();
+    this.props.searchHashtag(hashtag);
+  }
+
+  linkedText(tweet) {
     const isReply = !!tweet.in_reply_to_status_id;
 
     let text = [...tweet.full_text]
@@ -106,112 +128,92 @@ export default class Tweet extends PureComponent {
 
     const newEntities = [...hashtags, ...urls, ...userMentions];
 
+    if (!newEntities.length) {
+      return text;
+    }
+
     const sortedEntities =
       newEntities.length > 0
         ? newEntities.sort((a, b) => b.indices[0] - a.indices[0])
         : [];
 
+    const linkedText = [];
+
     sortedEntities.forEach(entity => {
-      switch (entity.type) {
-        case 'hashtag':
-          text = `${[...text].slice(0, entity.indices[0]).join('')}<a href="#${
-            entity.text
-          }" class="${styles.link} js-hashtag">#${entity.text}</a>${[...text]
-            .slice(entity.indices[1])
-            .join('')}`;
-          break;
+      linkedText.push(
+        <Fragment key={entity.indices[0]}>
+          {this.renderLink(entity, isReply, tweet)}
+          {[...text].slice(entity.indices[1]).join('')}
+        </Fragment>
+      );
 
-        case 'url':
-          text = `${[...text].slice(0, entity.indices[0]).join('')}<a href="${
-            entity.url
-          }" class="${styles.link} js-link">${entity.display_url}</a>${[...text]
-            .slice(entity.indices[1])
-            .join('')}`;
-          break;
-
-        case 'user_mention':
-          if (isReply && entity.id_str === tweet.in_reply_to_user_id_str) {
-            text = `<span class="${
-              styles.replyText
-            }">Replying to <a href="https://twitter.com/${
-              tweet.in_reply_to_screen_name
-            }" class="${styles.link} js-link">@${
-              tweet.in_reply_to_screen_name
-            }</a></span><br>${text}`;
-          } else {
-            text = `${[...text]
-              .slice(0, entity.indices[0])
-              .join('')}<a href="https://twitter.com/${
-              entity.screen_name
-            }" class="${styles.link} js-link">@${entity.screen_name}</a>${[
-              ...text
-            ]
-              .slice(entity.indices[1])
-              .join('')}`;
-          }
-          break;
-
-        default:
-          break;
-      }
+      text = [...text].slice(0, entity.indices[0]).join('');
     });
 
-    return text.replace(/\n/g, '<br>');
+    linkedText.push(text);
+
+    return linkedText.reverse();
   }
 
-  static applyEmoji(tweet) {
-    return twemoji.parse(tweet);
-  }
+  renderLink(entity, isReply, tweet) {
+    let link = '';
 
-  static onLinkClick(e) {
-    const url = e.currentTarget.getAttribute('href');
-    e.preventDefault();
-    shell.openExternal(url);
-  }
+    switch (entity.type) {
+      case 'hashtag':
+        link = (
+          <a
+            href={`#${entity.text}`}
+            className={styles.link}
+            onClick={this.onHashtagClick}
+          >
+            #{entity.text}
+          </a>
+        );
+        break;
 
-  constructor(props) {
-    super(props);
-    this.onHashtagClick = ::this.onHashtagClick;
-  }
+      case 'url':
+        link = (
+          <a
+            href={entity.url}
+            className={styles.link}
+            onClick={this.onLinkClick}
+          >
+            {entity.display_url}
+          </a>
+        );
+        break;
 
-  componentDidMount() {
-    const links = this.tweetText.querySelectorAll('.js-link');
-    const hashtags = this.tweetText.querySelectorAll('.js-hashtag');
+      case 'user_mention':
+        link =
+          isReply && entity.id_str === tweet.in_reply_to_user_id_str ? (
+            <Fragment>
+              <span className={styles.replyText}>
+                Replying to{' '}
+                <a
+                  href={`https://twitter.com/${tweet.in_reply_to_screen_name}`}
+                  className={styles.link}
+                >
+                  @{tweet.in_reply_to_screen_name}
+                </a>
+              </span>
+              <br />
+            </Fragment>
+          ) : (
+            <a
+              href={`https://twitter.com/${entity.screen_name}`}
+              className={styles.link}
+              onClick={this.onLinkClick}
+            >
+              @{entity.screen_name}
+            </a>
+          );
+        break;
 
-    if (links.length) {
-      for (let i = 0; i < links.length; i += 1) {
-        links[i].addEventListener('click', Tweet.onLinkClick, false);
-      }
+      default:
+        break;
     }
 
-    if (hashtags.length) {
-      for (let i = 0; i < hashtags.length; i += 1) {
-        hashtags[i].addEventListener('click', this.onHashtagClick, false);
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    const links = this.tweetText.querySelectorAll('.js-link');
-    const hashtags = this.tweetText.querySelectorAll('.js-hashtag');
-
-    if (links.length) {
-      for (let i = 0; i < links.length; i += 1) {
-        links[i].removeEventListener('click', Tweet.onLinkClick);
-      }
-    }
-
-    if (hashtags.length) {
-      for (let i = 0; i < hashtags.length; i += 1) {
-        hashtags[i].removeEventListener('click', this.onHashtagClick);
-      }
-    }
-  }
-
-  onHashtagClick(e) {
-    const hashtag = e.target.getAttribute('href');
-    e.preventDefault();
-    this.props.searchHashtag(hashtag);
+    return link;
   }
 
   renderContent() {
@@ -228,17 +230,10 @@ export default class Tweet extends PureComponent {
           tweet={this.props.tweet}
           user={user}
           onLinkClick={Tweet.onLinkClick}
+          onHashtagClick={this.onHashtagClick}
         />
         <div className={styles.textContainer}>
-          <div
-            className={styles.tweetText}
-            ref={c => {
-              this.tweetText = c;
-            }}
-            dangerouslySetInnerHTML={{
-              __html: Tweet.applyEmoji(Tweet.linkedText(tweet))
-            }}
-          />
+          <div className={styles.tweetText}>{this.linkedText(tweet)}</div>
           {Tweet.renderMedia(tweet)}
         </div>
         <TweetFooter tweet={this.props.tweet} />
@@ -249,7 +244,14 @@ export default class Tweet extends PureComponent {
   render() {
     return (
       <li className={styles.wrapper}>
-        <div className={styles.content}>{this.renderContent()}</div>
+        <div
+          className={styles.content}
+          ref={c => {
+            this.content = c;
+          }}
+        >
+          {this.renderContent()}
+        </div>
       </li>
     );
   }

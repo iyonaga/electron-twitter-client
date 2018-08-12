@@ -20,7 +20,7 @@ const initialState = {
   query: ''
 };
 
-const homeTimelineReducer = handleActions(
+const timelineReducer = handleActions(
   {
     [fetchTweetsRequest]: state => ({
       ...state,
@@ -49,4 +49,4 @@ const homeTimelineReducer = handleActions(
   initialState
 );
 
-export default homeTimelineReducer;
+export default timelineReducer;

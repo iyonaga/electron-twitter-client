@@ -13,7 +13,7 @@ export default class SearchBox extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      inputText: ''
+      inputText: this.props.query
     };
     this.onInputKeyDown = ::this.onInputKeyDown;
     this.onClick = ::this.onClick;
