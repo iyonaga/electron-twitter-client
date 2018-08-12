@@ -44,7 +44,7 @@ function mapDispatchToProps(dispatch) {
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
-          .getHomeTimeline({ tweet_mode: 'extended' })
+          .getHomeTimeline({ count: 100, tweet_mode: 'extended' })
           .then(tweets => {
             dispatch(fetchTweetsSuccess(tweets));
           })
@@ -58,7 +58,7 @@ function mapDispatchToProps(dispatch) {
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
-          .getFavoritesList({ tweet_mode: 'extended' })
+          .getFavoritesList({ count: 100, tweet_mode: 'extended' })
           .then(tweets => {
             dispatch(fetchTweetsSuccess(tweets));
           })
@@ -72,7 +72,7 @@ function mapDispatchToProps(dispatch) {
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
-          .getMentionsTimeline({ tweet_mode: 'extended' })
+          .getMentionsTimeline({ count: 100, tweet_mode: 'extended' })
           .then(tweets => {
             dispatch(fetchTweetsSuccess(tweets));
           })
