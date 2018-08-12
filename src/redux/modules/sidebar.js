@@ -3,17 +3,22 @@ import { createActions, handleActions } from 'redux-actions';
 export const {
   toggleTweetBox,
   toggleSearchBox,
-  toggleListsSelectBox
-} = createActions({
-  TOGGLE_TWEET_BOX: display => ({ display }),
-  TOGGLE_SEARCH_BOX: display => ({ display }),
-  TOGGLE_LISTS_SELECT_BOX: display => ({ display })
-});
+  toggleListsSelectBox,
+  updateCurrentMenu
+} = createActions(
+  {
+    TOGGLE_TWEET_BOX: display => ({ display }),
+    TOGGLE_SEARCH_BOX: display => ({ display }),
+    TOGGLE_LISTS_SELECT_BOX: display => ({ display })
+  },
+  'UPDATE_CURRENT_MENU'
+);
 
 const initialState = {
   isTweetBoxOpen: false,
   isSearchBoxOpen: false,
-  isListsSelectBoxOpen: false
+  isListsSelectBoxOpen: false,
+  currentMenu: 'home'
 };
 
 const sidebarReducer = handleActions(
@@ -46,6 +51,11 @@ const sidebarReducer = handleActions(
         typeof action.payload.display === 'undefined'
           ? !state.isListsSelectBoxOpen
           : action.payload.display
+    }),
+
+    [updateCurrentMenu]: (state, action) => ({
+      ...state,
+      currentMenu: action.payload
     })
   },
   initialState

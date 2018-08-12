@@ -13,6 +13,7 @@ import styles from './sidebar.module.scss';
 
 export default class Sidebar extends PureComponent {
   static propTypes = {
+    currentMenu: PropTypes.string.isRequired,
     closeBox: PropTypes.func.isRequired,
     toggleTweetBox: PropTypes.func.isRequired,
     toggleSearchBox: PropTypes.func.isRequired,
@@ -24,6 +25,7 @@ export default class Sidebar extends PureComponent {
 
   constructor(props) {
     super(props);
+    this.getClass = ::this.getClass;
     this.onHomeClick = ::this.onHomeClick;
     this.onFavoriteClick = ::this.onFavoriteClick;
   }
@@ -38,32 +40,47 @@ export default class Sidebar extends PureComponent {
     this.props.getFavoritesList();
   }
 
+  getClass(menu) {
+    return `${styles.menuItem} ${
+      this.props.currentMenu === menu ? 'isActive' : ''
+    }`;
+  }
+
   render() {
     return (
       <div className={styles.container}>
         <ul className={styles.menuList}>
-          <li className={styles.menuItem} onClick={this.props.toggleTweetBox}>
+          <li
+            className={this.getClass('tweet')}
+            onClick={this.props.toggleTweetBox}
+          >
             <span className={(styles.menuIcon, styles['menuIcon--edit'])}>
               <FontAwesomeIcon icon={faEdit} className="fa-fw" />
             </span>
           </li>
-          <li className={styles.menuItem} onClick={this.props.toggleSearchBox}>
+          <li
+            className={this.getClass('search')}
+            onClick={this.props.toggleSearchBox}
+          >
             <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faSearch} className="fa-fw" />
             </span>
           </li>
-          <li className={styles.menuItem} onClick={this.onHomeClick}>
+          <li className={this.getClass('home')} onClick={this.onHomeClick}>
             <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faHome} className="fa-fw" />
             </span>
           </li>
-          <li className={styles.menuItem} onClick={this.onFavoriteClick}>
+          <li
+            className={this.getClass('favorite')}
+            onClick={this.onFavoriteClick}
+          >
             <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faHeart} className="fa-fw" />
             </span>
           </li>
           <li
-            className={styles.menuItem}
+            className={this.getClass('lists')}
             onClick={this.props.toggleListsSelectBox}
           >
             <span className={styles.menuIcon}>
@@ -71,7 +88,7 @@ export default class Sidebar extends PureComponent {
             </span>
           </li>
           <li
-            className={styles.menuItem}
+            className={this.getClass('mentions')}
             onClick={this.props.getMentionsTimeline}
           >
             <span className={styles.menuIcon}>

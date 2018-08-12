@@ -9,11 +9,13 @@ import {
 import {
   toggleTweetBox,
   toggleSearchBox,
-  toggleListsSelectBox
+  toggleListsSelectBox,
+  updateCurrentMenu
 } from '../redux/modules/sidebar';
 
 function mapStateToProps(state) {
   return {
+    currentMenu: state.sidebarReducer.currentMenu,
     isTweetBoxOpen: state.sidebarReducer.isTweetBoxOpen,
     isSearchBoxOpen: state.sidebarReducer.isSearchBoxOpen,
     isListsSelectBoxOpen: state.sidebarReducer.isListsSelectBoxOpen
@@ -41,6 +43,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     getHomeTimeline() {
+      dispatch(updateCurrentMenu('home'));
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
@@ -55,6 +58,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     getFavoritesList() {
+      dispatch(updateCurrentMenu('favorite'));
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
@@ -69,6 +73,7 @@ function mapDispatchToProps(dispatch) {
     },
 
     getMentionsTimeline() {
+      dispatch(updateCurrentMenu('mentions'));
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client

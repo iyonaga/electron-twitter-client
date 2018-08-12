@@ -6,6 +6,7 @@ import {
   fetchTweetsSuccess,
   fetchTweetsFailure
 } from '../redux/modules/timeline';
+import { updateCurrentMenu } from '../redux/modules/sidebar';
 
 function mapStateToProps(state) {
   return {
@@ -16,6 +17,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     searchTweets(query) {
+      dispatch(updateCurrentMenu('search'));
       return createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client

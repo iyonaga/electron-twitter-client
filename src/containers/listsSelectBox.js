@@ -6,6 +6,7 @@ import {
   fetchTweetsSuccess,
   fetchTweetsFailure
 } from '../redux/modules/timeline';
+import { updateCurrentMenu } from '../redux/modules/sidebar';
 
 function mapStateToProps() {
   return {};
@@ -14,6 +15,7 @@ function mapStateToProps() {
 function mapDispatchToProps(dispatch) {
   return {
     getListsStatuses(list) {
+      dispatch(updateCurrentMenu('lists'));
       createTwitterClient().then(client => {
         dispatch(fetchTweetsRequest());
         client
