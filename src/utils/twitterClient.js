@@ -1,8 +1,14 @@
 import Twit from 'twit';
 import storage from 'electron-json-storage';
 
+let instance = null;
+
 export default class TwitterClient {
   constructor(accounts) {
+    if (!instance) {
+      instance = this;
+    }
+
     this.client = new Twit({
       consumer_key: accounts.consumerKey,
       consumer_secret: accounts.consumerSecret,
@@ -10,6 +16,9 @@ export default class TwitterClient {
       access_token_secret: accounts.accessTokenSecret,
       timeout_ms: 60 * 1000
     });
+    this.stream = null;
+
+    return instance;
   }
 
   postTweet(params) {
@@ -183,11 +192,17 @@ export default class TwitterClient {
     });
   }
 
-  filterStream(track, callback) {
-    const stream = this.client.stream('statuses/filter', { track });
-    stream.on('tweet', tweet => {
+  filterStream(params, callback) {
+    this.stream = this.client.stream('statuses/filter', params);
+    this.stream.on('tweet', tweet => {
       callback(tweet);
     });
+  }
+
+  stopStream() {
+    if (this.stream) {
+      this.stream.stop();
+    }
   }
 
   getHomeTimeline(params) {
@@ -229,6 +244,30 @@ export default class TwitterClient {
   getListsStatuses(params) {
     return new Promise((resolve, reject) => {
       this.client.get('lists/statuses', params, (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  getListsMembers(params) {
+    return new Promise((resolve, reject) => {
+      this.client.get('lists/members', params, (error, data) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  getFrinendsIds(params) {
+    return new Promise((resolve, reject) => {
+      this.client.get('friends/ids', params, (error, data) => {
         if (error) {
           reject(error);
         } else {

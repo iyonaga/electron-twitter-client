@@ -137,3 +137,36 @@
 .imageItem {}
 
 .videoContainer {}
+
+.quoteTweetContainer {
+  border: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 5px;
+  margin-top: 10px;
+
+  &:hover {
+    border: 1px solid rgba(0, 0, 0, .2);
+  }
+}
+
+.quoteTweetInner {
+  padding: 10px 12px;
+}
+
+.quoteTweetLink {}
+
+.quoteTweetAuthor {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap
+}
+
+.quoteTweetUserName {}
+
+.quoteTweetScreenName {
+  color: #999;
+  margin-left: 1px
+}
+
+.quoteTweetText {
+  margin-top: 4px;
+}
