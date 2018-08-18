@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import Moment from 'moment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRetweet } from '@fortawesome/free-solid-svg-icons';
 import { getCurrentUser } from '../utils/twitterClient';
 import ProfileCard from './profileCard';
+import Time from './time';
 import styles from './tweetHeader.module.scss';
 
 export default class TweetHeader extends PureComponent {
@@ -17,10 +17,6 @@ export default class TweetHeader extends PureComponent {
 
   static biggerProfileImage(url) {
     return url.replace(/_normal/, '_bigger');
-  }
-
-  static relativeTime(createdAt) {
-    return Moment(new Date(createdAt)).fromNow();
   }
 
   constructor(props) {
@@ -170,7 +166,7 @@ export default class TweetHeader extends PureComponent {
             </div>
           </a>
           <div className={styles.time}>
-            {TweetHeader.relativeTime(tweet.created_at)}
+            <Time createdAt={tweet.created_at} />
           </div>
           <div
             className={`${styles.profileCardContainer} ${
