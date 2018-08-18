@@ -5,18 +5,23 @@ export const {
   fetchTweetsSuccess,
   fetchTweetsFailure,
   updateQuery,
-  addTweet
+  addTweet,
+  updateSavedTweets,
+  clearTimeline
 } = createActions(
   'FETCH_TWEETS_REQUEST',
   'FETCH_TWEETS_SUCCESS',
   'FETCH_TWEETS_FAILURE',
   'UPDATE_QUERY',
-  'ADD_TWEET'
+  'ADD_TWEET',
+  'UPDATE_SAVED_TWEETS',
+  'CLEAR_TIMELINE'
 );
 
 const initialState = {
   isFetching: false,
   tweets: [],
+  savedTweets: { ids: [] },
   isError: false,
   error: {},
   query: ''
@@ -51,6 +56,16 @@ const timelineReducer = handleActions(
     [addTweet]: (state, action) => ({
       ...state,
       tweets: [action.payload, ...state.tweets]
+    }),
+
+    [updateSavedTweets]: (state, action) => ({
+      ...state,
+      savedTweets: action.payload
+    }),
+
+    [clearTimeline]: state => ({
+      ...state,
+      tweets: []
     })
   },
   initialState

@@ -5,7 +5,8 @@ import {
   fetchTweetsRequest,
   fetchTweetsSuccess,
   fetchTweetsFailure,
-  addTweet
+  addTweet,
+  updateSavedTweets
 } from '../redux/modules/timeline';
 
 function mapStateToProps(state) {
@@ -68,6 +69,10 @@ function mapDispatchToProps(dispatch) {
             dispatch(fetchTweetsFailure(error));
           });
       });
+    },
+
+    updateSavedTweets(tweets) {
+      dispatch(updateSavedTweets(tweets));
     }
   };
 }

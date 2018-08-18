@@ -1,15 +1,24 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import storage from 'electron-json-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRetweet } from '@fortawesome/free-solid-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import {
+  faRetweet,
+  faBookmark as fasBookmark
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  faHeart,
+  faBookmark as farBookmark
+} from '@fortawesome/free-regular-svg-icons';
 import { createTwitterClient } from '../utils/twitterClient';
 import RetweetBox from './retweetBox';
 import styles from './tweetFooter.module.scss';
 
 export default class TweetFooter extends PureComponent {
   static propTypes = {
-    tweet: PropTypes.object.isRequired
+    tweet: PropTypes.object.isRequired,
+    savedTweets: PropTypes.object.isRequired,
+    updateSavedTweets: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -23,12 +32,22 @@ export default class TweetFooter extends PureComponent {
       favoriteCount: tweet.favorite_count,
       isRetweeted: tweet.retweeted,
       isFavorited: tweet.favorited,
-      isRetweetBoxOpen: false
+      isRetweetBoxOpen: false,
+      isSaved: this.props.savedTweets.ids.includes(this.props.tweet.id_str)
     };
 
     this.closeRetweetBox = ::this.closeRetweetBox;
     this.onRetweetClick = ::this.onRetweetClick;
     this.onFavoriteClick = ::this.onFavoriteClick;
+    this.onSaveClick = ::this.onSaveClick;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.savedTweets !== this.props.savedTweets) {
+      this.setState({
+        isSaved: nextProps.savedTweets.ids.includes(this.props.tweet.id_str)
+      });
+    }
   }
 
   onRetweetClick() {
@@ -66,6 +85,27 @@ export default class TweetFooter extends PureComponent {
       });
   }
 
+  onSaveClick() {
+    const { tweet } = this.props;
+
+    storage.get('savedTweets', (error, data) => {
+      if (error) throw error;
+
+      const savedTweets = { ids: [] };
+
+      if (this.state.isSaved) {
+        savedTweets.ids = data.ids.filter(id => id !== tweet.id_str);
+      } else {
+        savedTweets.ids =
+          Object.keys(data).length === 0
+            ? [tweet.id_str]
+            : [tweet.id_str, ...data.ids];
+      }
+
+      this.props.updateSavedTweets(savedTweets);
+    });
+  }
+
   closeRetweetBox(res) {
     this.setState({
       isRetweetBoxOpen: false,
@@ -79,30 +119,44 @@ export default class TweetFooter extends PureComponent {
   render() {
     return (
       <div className={styles.container}>
-        <ul className={styles.actions}>
-          <li
-            className={`${styles.actionItem} ${
-              this.state.isRetweeted ? styles['actionItem--retweeted'] : ''
-            }`}
-            onClick={this.onRetweetClick}
-          >
-            <FontAwesomeIcon icon={faRetweet} />{' '}
-            <span className={styles.actionCount}>
-              {this.state.retweetCount.toLocaleString()}
-            </span>
-          </li>
-          <li
-            className={`${styles.actionItem} ${
-              this.state.isFavorited ? styles['actionItem--favorited'] : ''
-            }`}
-            onClick={this.onFavoriteClick}
-          >
-            <FontAwesomeIcon icon={faHeart} />{' '}
-            <span className={styles.actionCount}>
-              {this.state.favoriteCount.toLocaleString()}
-            </span>
-          </li>
-        </ul>
+        <div className={styles.actions}>
+          <ul className={styles.actionsLeft}>
+            <li
+              className={`${styles.actionItem} ${
+                this.state.isRetweeted ? styles['actionItem--retweeted'] : ''
+              }`}
+              onClick={this.onRetweetClick}
+            >
+              <FontAwesomeIcon icon={faRetweet} />{' '}
+              <span className={styles.actionCount}>
+                {this.state.retweetCount.toLocaleString()}
+              </span>
+            </li>
+            <li
+              className={`${styles.actionItem} ${
+                this.state.isFavorited ? styles['actionItem--favorited'] : ''
+              }`}
+              onClick={this.onFavoriteClick}
+            >
+              <FontAwesomeIcon icon={faHeart} />{' '}
+              <span className={styles.actionCount}>
+                {this.state.favoriteCount.toLocaleString()}
+              </span>
+            </li>
+          </ul>
+          <div className={styles.actionsRight}>
+            <button
+              className={`${styles.actionItem} ${
+                this.state.isSaved ? styles['actionItem--saved'] : ''
+              }`}
+              onClick={this.onSaveClick}
+            >
+              <FontAwesomeIcon
+                icon={this.state.isSaved ? fasBookmark : farBookmark}
+              />
+            </button>
+          </div>
+        </div>
         {this.state.isRetweetBoxOpen && (
           <RetweetBox
             tweet={this.props.tweet}

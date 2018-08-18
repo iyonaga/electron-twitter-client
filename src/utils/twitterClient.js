@@ -45,9 +45,9 @@ export default class TwitterClient {
     });
   }
 
-  getTweet(id) {
+  getTweet(params) {
     return new Promise((resolve, reject) => {
-      this.client.get('statuses/show/:id', { id }, (error, data) => {
+      this.client.get('statuses/show/:id', params, (error, data) => {
         if (error) {
           reject(error);
         } else {

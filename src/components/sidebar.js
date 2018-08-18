@@ -7,7 +7,8 @@ import {
   faHome,
   faHeart,
   faListUl,
-  faAt
+  faAt,
+  faBookmark
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './sidebar.module.scss';
 
@@ -20,7 +21,9 @@ export default class Sidebar extends PureComponent {
     toggleListsSelectBox: PropTypes.func.isRequired,
     getHomeTimeline: PropTypes.func.isRequired,
     getFavoritesList: PropTypes.func.isRequired,
-    getMentionsTimeline: PropTypes.func.isRequired
+    getMentionsTimeline: PropTypes.func.isRequired,
+    getSavedTweetsList: PropTypes.func.isRequired,
+    savedTweets: PropTypes.object.isRequired
   };
 
   constructor(props) {
@@ -28,6 +31,7 @@ export default class Sidebar extends PureComponent {
     this.getClass = ::this.getClass;
     this.onHomeClick = ::this.onHomeClick;
     this.onFavoriteClick = ::this.onFavoriteClick;
+    this.onSavedClick = ::this.onSavedClick;
   }
 
   onHomeClick() {
@@ -38,6 +42,11 @@ export default class Sidebar extends PureComponent {
   onFavoriteClick() {
     this.props.closeBox();
     this.props.getFavoritesList();
+  }
+
+  onSavedClick() {
+    this.props.closeBox();
+    this.props.getSavedTweetsList(this.props.savedTweets);
   }
 
   getClass(menu) {
@@ -93,6 +102,11 @@ export default class Sidebar extends PureComponent {
           >
             <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faAt} className="fa-fw" />
+            </span>
+          </li>
+          <li className={this.getClass('saved')} onClick={this.onSavedClick}>
+            <span className={styles.menuIcon}>
+              <FontAwesomeIcon icon={faBookmark} className="fa-fw" />
             </span>
           </li>
         </ul>

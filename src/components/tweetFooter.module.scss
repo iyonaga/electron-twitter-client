@@ -1,14 +1,25 @@
 .container {}
 
 .actions {
+  align-items: center;
   display: flex;
+  justify-content: space-between;
   margin-top: 10px;
+}
+
+.actionsLeft {
+  display: flex;
+}
+
+.actionsRight {
+
 }
 
 .actionItem {
   align-items: center;
   color: #999;
   display: flex;
+  outline: none;
 
   & + .actionItem {
     margin-left: 20px;
@@ -20,6 +31,10 @@
 
   &--favorited {
     color: #ce2070;
+  }
+
+  &--saved {
+    color: #c74d45;
   }
 }
 

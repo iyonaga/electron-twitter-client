@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import storage from 'electron-json-storage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import TweetBox from './tweetBox';
@@ -11,6 +12,7 @@ import styles from './contents.module.scss';
 export default class Contents extends Component {
   static propTypes = {
     getHomeTimeline: PropTypes.func.isRequired,
+    updateSavedTweets: PropTypes.func.isRequired,
     isFetching: PropTypes.bool.isRequired,
     tweets: PropTypes.array.isRequired,
     isError: PropTypes.bool.isRequired,
@@ -19,6 +21,15 @@ export default class Contents extends Component {
     isSearchBoxOpen: PropTypes.bool.isRequired,
     isListsSelectBoxOpen: PropTypes.bool.isRequired
   };
+
+  componentWillMount() {
+    storage.get('savedTweets', (error, data) => {
+      if (error) throw error;
+      if (Object.keys(data).length) {
+        this.props.updateSavedTweets(data);
+      }
+    });
+  }
 
   componentDidMount() {
     this.props.getHomeTimeline();

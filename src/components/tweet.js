@@ -4,7 +4,7 @@ import { shell } from 'electron';
 import { Player, BigPlayButton } from 'video-react';
 import twemoji from 'twemoji';
 import TweetHeader from './tweetHeader';
-import TweetFooter from './tweetFooter';
+import TweetFooter from '../containers/tweetFooter';
 import styles from './tweet.module.scss';
 
 export default class Tweet extends PureComponent {

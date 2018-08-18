@@ -5,7 +5,8 @@ import {
   fetchTweetsRequest,
   fetchTweetsSuccess,
   fetchTweetsFailure,
-  addTweet
+  addTweet,
+  clearTimeline
 } from '../redux/modules/timeline';
 import {
   toggleTweetBox,
@@ -19,7 +20,8 @@ function mapStateToProps(state) {
     currentMenu: state.sidebarReducer.currentMenu,
     isTweetBoxOpen: state.sidebarReducer.isTweetBoxOpen,
     isSearchBoxOpen: state.sidebarReducer.isSearchBoxOpen,
-    isListsSelectBoxOpen: state.sidebarReducer.isListsSelectBoxOpen
+    isListsSelectBoxOpen: state.sidebarReducer.isListsSelectBoxOpen,
+    savedTweets: state.timelineReducer.savedTweets
   };
 }
 
@@ -147,6 +149,19 @@ function mapDispatchToProps(dispatch) {
           .catch(error => {
             dispatch(fetchTweetsFailure(error));
           });
+      });
+    },
+
+    getSavedTweetsList(savedTweets) {
+      dispatch(updateCurrentMenu('saved'));
+      createTwitterClient().then(client => {
+        dispatch(clearTimeline());
+        client.stopStream();
+        savedTweets.ids.forEach(id => {
+          client.getTweet({ id, tweet_mode: 'extended' }).then(res => {
+            dispatch(addTweet(res));
+          });
+        });
       });
     }
   };
