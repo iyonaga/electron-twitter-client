@@ -161,7 +161,7 @@ export default class Tweet extends PureComponent {
         type: 'url'
       }));
 
-    const replys = [];
+    const replies = [];
 
     const userMentions = tweet.entities.user_mentions
       .filter(userMention => {
@@ -170,7 +170,7 @@ export default class Tweet extends PureComponent {
           tweet.display_text_range &&
           tweet.display_text_range[0] > userMention.indices[1]
         ) {
-          replys.push(userMention);
+          replies.push(userMention);
           return false;
         }
 
@@ -183,7 +183,7 @@ export default class Tweet extends PureComponent {
 
     const newEntities = [...hashtags, ...urls, ...userMentions];
 
-    if (!replys.length && !newEntities.length) {
+    if (!replies.length && !newEntities.length) {
       return text;
     }
 
@@ -207,12 +207,12 @@ export default class Tweet extends PureComponent {
 
     linkedText.unshift(text);
 
-    if (replys.length) {
+    if (replies.length) {
       linkedText.unshift(
-        <Fragment key={JSON.stringify(replys)}>
+        <Fragment key={JSON.stringify(replies)}>
           <span className={styles.replyText}>
             Replying to{' '}
-            {replys.map((reply, index) => (
+            {replies.map((reply, index) => (
               <Fragment key={reply.id}>
                 <a
                   href={`https://twitter.com/${reply.screen_name}`}
@@ -221,7 +221,7 @@ export default class Tweet extends PureComponent {
                 >
                   @{reply.screen_name}
                 </a>
-                {replys.length !== index + 1 && ' '}
+                {replies.length !== index + 1 && ' '}
               </Fragment>
             ))}
           </span>
