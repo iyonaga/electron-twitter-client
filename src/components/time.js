@@ -29,7 +29,7 @@ export default class Time extends Component {
 
   componentDidMount() {
     if (!this.isMoreThanOneDay()) {
-      this.timer = setInterval(::this.tick, 40000);
+      this.timer = setInterval(::this.tick, 60000);
     }
   }
 
