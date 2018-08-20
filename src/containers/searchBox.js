@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { createTwitterClient } from '../utils/twitterClient';
+import { searchStream } from '../utils/stream';
 import SearchBox from '../components/searchBox';
 import {
   fetchTweetsRequest,
@@ -17,41 +18,28 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    searchTweets(query) {
+    async searchTweets(query) {
       dispatch(updateCurrentMenu('search'));
-      return createTwitterClient().then(client => {
-        dispatch(fetchTweetsRequest());
-        client.stopStream();
-        client
-          .searchTweets({ q: query, count: 100, tweet_mode: 'extended' })
-          .then(res => {
-            dispatch(fetchTweetsSuccess(res.statuses));
 
-            const params = {
-              track: query
-            };
+      const client = await createTwitterClient();
+      client.stopStream();
+      dispatch(fetchTweetsRequest());
 
-            client.filterStream(params, tweet => {
-              let newTweet = tweet;
+      try {
+        const res = await client.searchTweets({
+          q: query,
+          count: 100,
+          tweet_mode: 'extended',
+          exclude: 'retweets'
+        });
+        dispatch(fetchTweetsSuccess(res.statuses));
 
-              if (tweet.retweeted_status) {
-                newTweet.retweeted_status.full_text =
-                  newTweet.retweeted_status.text;
-              } else {
-                newTweet.full_text = newTweet.text;
-              }
-
-              if (newTweet.extended_tweet) {
-                newTweet = { ...newTweet, ...newTweet.extended_tweet };
-              }
-
-              dispatch(addTweet(newTweet));
-            });
-          })
-          .catch(error => {
-            dispatch(fetchTweetsFailure(error));
-          });
-      });
+        searchStream(query, tweet => {
+          dispatch(addTweet(tweet));
+        });
+      } catch (error) {
+        dispatch(fetchTweetsFailure(error));
+      }
     }
   };
 }

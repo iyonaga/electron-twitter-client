@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { createTwitterClient } from '../utils/twitterClient';
+import { listStream } from '../utils/stream';
 import ListsSelectBox from '../components/listsSelectBox';
 import {
   fetchTweetsRequest,
@@ -15,54 +16,26 @@ function mapStateToProps() {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getListsStatuses(list) {
+    async getListsStatuses(list) {
       dispatch(updateCurrentMenu('lists'));
-      createTwitterClient().then(client => {
-        dispatch(fetchTweetsRequest());
-        client.stopStream();
-        client
-          .getListsStatuses({
-            list_id: list.id_str,
-            // slug: list.slug,
-            tweet_mode: 'extended'
-          })
-          .then(tweets => {
-            dispatch(fetchTweetsSuccess(tweets));
 
-            client
-              .getListsMembers({ list_id: list.id_str, count: 5000 })
-              .then(res => {
-                const follow = res.users.map(user => user.id_str);
-                const params = {
-                  follow: follow.join(',')
-                };
+      const client = await createTwitterClient();
+      client.stopStream();
+      dispatch(fetchTweetsRequest());
 
-                client.filterStream(params, tweet => {
-                  let newTweet = tweet;
+      try {
+        const tweets = await client.getListsStatuses({
+          list_id: list.id_str,
+          tweet_mode: 'extended'
+        });
+        dispatch(fetchTweetsSuccess(tweets));
 
-                  if (!follow.includes(newTweet.user.id_str)) {
-                    return;
-                  }
-
-                  if (tweet.retweeted_status) {
-                    newTweet.retweeted_status.full_text =
-                      newTweet.retweeted_status.text;
-                  } else {
-                    newTweet.full_text = newTweet.text;
-                  }
-
-                  if (newTweet.extended_tweet) {
-                    newTweet = { ...newTweet, ...newTweet.extended_tweet };
-                  }
-
-                  dispatch(addTweet(newTweet));
-                });
-              });
-          })
-          .catch(error => {
-            dispatch(fetchTweetsFailure(error));
-          });
-      });
+        listStream(list.id_str, tweet => {
+          dispatch(addTweet(tweet));
+        });
+      } catch (error) {
+        dispatch(fetchTweetsFailure(error));
+      }
     }
   };
 }

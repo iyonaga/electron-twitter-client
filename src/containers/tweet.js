@@ -1,13 +1,15 @@
 import { connect } from 'react-redux';
 import Tweet from '../components/tweet';
 import { createTwitterClient } from '../utils/twitterClient';
+import { searchStream } from '../utils/stream';
 import {
   fetchTweetsRequest,
   fetchTweetsSuccess,
   fetchTweetsFailure,
+  addTweet,
   updateQuery
 } from '../redux/modules/timeline';
-import { toggleSearchBox } from '../redux/modules/sidebar';
+import { updateCurrentMenu, toggleSearchBox } from '../redux/modules/sidebar';
 
 function mapStateToProps() {
   return {};
@@ -15,21 +17,30 @@ function mapStateToProps() {
 
 function mapDispatchToProps(dispatch) {
   return {
-    searchHashtag(hashtag) {
+    async searchHashtag(hashtag) {
+      dispatch(updateCurrentMenu('search'));
       dispatch(toggleSearchBox(true));
       dispatch(updateQuery(hashtag));
 
-      createTwitterClient().then(client => {
-        dispatch(fetchTweetsRequest());
-        client
-          .searchTweets({ q: hashtag, count: 20, tweet_mode: 'extended' })
-          .then(res => {
-            dispatch(fetchTweetsSuccess(res.statuses));
-          })
-          .catch(error => {
-            dispatch(fetchTweetsFailure(error));
-          });
-      });
+      const client = await createTwitterClient();
+      client.stopStream();
+      dispatch(fetchTweetsRequest());
+
+      try {
+        const res = await client.searchTweets({
+          q: hashtag,
+          count: 20,
+          tweet_mode: 'extended',
+          exclude: 'retweets'
+        });
+        dispatch(fetchTweetsSuccess(res.statuses));
+
+        searchStream(hashtag, tweet => {
+          dispatch(addTweet(tweet));
+        });
+      } catch (error) {
+        dispatch(fetchTweetsFailure(error));
+      }
     }
   };
 }

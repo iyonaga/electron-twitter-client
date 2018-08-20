@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import Sidebar from '../components/sidebar';
-import { createTwitterClient, getCurrentUser } from '../utils/twitterClient';
+import { createTwitterClient } from '../utils/twitterClient';
+import { homeTimelineStream, mentionsStream } from '../utils/stream';
 import {
   fetchTweetsRequest,
   fetchTweetsSuccess,
@@ -43,111 +44,66 @@ function mapDispatchToProps(dispatch) {
       dispatch(toggleListsSelectBox());
     },
 
-    getHomeTimeline() {
+    async getHomeTimeline() {
       dispatch(updateCurrentMenu('home'));
-      createTwitterClient().then(client => {
-        dispatch(fetchTweetsRequest());
-        client.stopStream();
-        client
-          .getHomeTimeline({ count: 100, tweet_mode: 'extended' })
-          .then(tweets => {
-            dispatch(fetchTweetsSuccess(tweets));
 
-            getCurrentUser().then(user => {
-              client
-                .getFrinendsIds({ user_id: user.id_str, stringify_ids: true })
-                .then(res => {
-                  const follow = [user.id_str, ...res.ids];
-                  const params = {
-                    follow: follow.join(',')
-                  };
+      const client = await createTwitterClient();
+      client.stopStream();
+      dispatch(fetchTweetsRequest());
 
-                  client.filterStream(params, tweet => {
-                    let newTweet = tweet;
+      try {
+        const tweets = await client.getHomeTimeline({
+          count: 100,
+          tweet_mode: 'extended'
+        });
+        dispatch(fetchTweetsSuccess(tweets));
 
-                    if (newTweet.in_reply_to_user_id_str === null) {
-                      if (!follow.includes(newTweet.user.id_str)) {
-                        return;
-                      }
-
-                      if (tweet.retweeted_status) {
-                        newTweet.retweeted_status.full_text =
-                          newTweet.retweeted_status.text;
-                      } else {
-                        newTweet.full_text = newTweet.text;
-                      }
-
-                      if (newTweet.extended_tweet) {
-                        newTweet = { ...newTweet, ...newTweet.extended_tweet };
-                      }
-
-                      dispatch(addTweet(newTweet));
-                    }
-                  });
-                });
-            });
-          })
-          .catch(error => {
-            dispatch(fetchTweetsFailure(error));
-          });
-      });
+        homeTimelineStream(tweet => {
+          dispatch(addTweet(tweet));
+        });
+      } catch (error) {
+        dispatch(fetchTweetsFailure(error));
+      }
     },
 
-    getFavoritesList() {
+    async getFavoritesList() {
       dispatch(updateCurrentMenu('favorite'));
-      createTwitterClient().then(client => {
-        dispatch(fetchTweetsRequest());
-        client.stopStream();
-        client
-          .getFavoritesList({ count: 100, tweet_mode: 'extended' })
-          .then(tweets => {
-            dispatch(fetchTweetsSuccess(tweets));
-          })
-          .catch(error => {
-            dispatch(fetchTweetsFailure(error));
-          });
-      });
+
+      const client = await createTwitterClient();
+      client.stopStream();
+      dispatch(fetchTweetsRequest());
+
+      try {
+        const tweets = await client.getFavoritesList({
+          count: 100,
+          tweet_mode: 'extended'
+        });
+        dispatch(fetchTweetsSuccess(tweets));
+      } catch (error) {
+        dispatch(fetchTweetsFailure(error));
+      }
     },
 
-    getMentionsTimeline() {
+    async getMentionsTimeline() {
       dispatch(updateCurrentMenu('mentions'));
-      createTwitterClient().then(client => {
-        dispatch(fetchTweetsRequest());
-        client.stopStream();
-        client
-          .getMentionsTimeline({ count: 100, tweet_mode: 'extended' })
-          .then(tweets => {
-            dispatch(fetchTweetsSuccess(tweets));
 
-            getCurrentUser().then(user => {
-              const params = {
-                follow: user.id_str
-              };
+      const client = await createTwitterClient();
+      client.stopStream();
+      dispatch(fetchTweetsRequest());
 
-              client.filterStream(params, tweet => {
-                let newTweet = tweet;
+      try {
+        const tweets = await client.getMentionsTimeline({
+          count: 100,
+          tweet_mode: 'extended'
+        });
+        dispatch(fetchTweetsSuccess(tweets));
 
-                if (newTweet.in_reply_to_user_id_str === user.id_str) {
-                  if (tweet.retweeted_status) {
-                    newTweet.retweeted_status.full_text =
-                      newTweet.retweeted_status.text;
-                  } else {
-                    newTweet.full_text = newTweet.text;
-                  }
-
-                  if (newTweet.extended_tweet) {
-                    newTweet = { ...newTweet, ...newTweet.extended_tweet };
-                  }
-
-                  dispatch(addTweet(newTweet));
-                }
-              });
-            });
-          })
-          .catch(error => {
-            dispatch(fetchTweetsFailure(error));
-          });
-      });
+        mentionsStream(tweet => {
+          dispatch(addTweet(tweet));
+        });
+      } catch (error) {
+        dispatch(fetchTweetsFailure(error));
+      }
     }
   };
 }

@@ -42,9 +42,8 @@ export default class SearchBox extends PureComponent {
 
     if (query && e.key === 'Enter') {
       this.input.blur();
-      this.props.searchTweets(query).then(() => {
-        window.scrollTo(0, 0);
-      });
+      window.scrollTo(0, 0);
+      this.props.searchTweets(query);
     }
   }
 
@@ -54,9 +53,8 @@ export default class SearchBox extends PureComponent {
 
     if (query) {
       this.input.blur();
-      this.props.searchTweets(query).then(() => {
-        window.scrollTo(0, 0);
-      });
+      window.scrollTo(0, 0);
+      this.props.searchTweets(query);
     }
   }
 
