@@ -18,11 +18,29 @@ function authenticate() {
   });
 }
 
-function createWindow() {
-  win = new BrowserWindow({
-    width: 800,
-    height: 600
+function getWindowBounds() {
+  return new Promise((resolve, reject) => {
+    storage.get('windowBounds', (error, data) => {
+      if (error) reject(error);
+
+      const defaultBounds = {
+        width: 800,
+        height: 600
+      };
+
+      const windowBounds =
+        Object.keys(data).length === 0 ? defaultBounds : data;
+
+      resolve(windowBounds);
+    });
   });
+}
+
+async function createWindow() {
+  const windowBounds = await getWindowBounds();
+  windowBounds.minWidth = 450;
+
+  win = new BrowserWindow(windowBounds);
 
   win.loadURL(
     url.format({
@@ -35,6 +53,13 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     win.webContents.openDevTools();
   }
+
+  win.on('close', () => {
+    const bounds = win.getBounds();
+    storage.set('windowBounds', bounds, error => {
+      if (error) throw error;
+    });
+  });
 
   win.on('closed', () => {
     win = null;
