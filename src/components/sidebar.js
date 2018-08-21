@@ -117,17 +117,17 @@ export default class Sidebar extends PureComponent {
               <FontAwesomeIcon icon={faEdit} className="fa-fw" />
             </span>
           </li>
+          <li className={this.getClass('home')} onClick={this.onHomeClick}>
+            <span className={styles.menuIcon}>
+              <FontAwesomeIcon icon={faHome} className="fa-fw" />
+            </span>
+          </li>
           <li
             className={this.getClass('search')}
             onClick={this.props.toggleSearchBox}
           >
             <span className={styles.menuIcon}>
               <FontAwesomeIcon icon={faSearch} className="fa-fw" />
-            </span>
-          </li>
-          <li className={this.getClass('home')} onClick={this.onHomeClick}>
-            <span className={styles.menuIcon}>
-              <FontAwesomeIcon icon={faHome} className="fa-fw" />
             </span>
           </li>
           <li
