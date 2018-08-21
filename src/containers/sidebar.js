@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { ipcRenderer } from 'electron';
 import Sidebar from '../components/sidebar';
 import { createTwitterClient } from '../utils/twitterClient';
 import { homeTimelineStream, mentionsStream } from '../utils/stream';
@@ -104,6 +105,10 @@ function mapDispatchToProps(dispatch) {
       } catch (error) {
         dispatch(fetchTweetsFailure(error));
       }
+    },
+
+    logout() {
+      ipcRenderer.send('removeAccount');
     }
   };
 }
