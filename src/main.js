@@ -1,8 +1,15 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import log from 'electron-log';
+import { autoUpdater } from 'electron-updater';
 import path from 'path';
 import url from 'url';
 import storage from 'electron-json-storage';
 import Auth from './utils/auth';
+
+if (process.env.NODE_ENV === 'development') {
+  autoUpdater.logger = log;
+  autoUpdater.logger.transports.file.level = 'debug';
+}
 
 let win;
 
@@ -67,6 +74,8 @@ async function createWindow() {
 }
 
 app.on('ready', () => {
+  autoUpdater.checkForUpdatesAndNotify();
+
   storage.get('accounts', (error, data) => {
     if (error) throw error;
 

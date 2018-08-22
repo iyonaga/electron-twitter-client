@@ -1,6 +1,6 @@
 {
   "name": "electron-twitter-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Twitter client built with Electron, React and Redux",
   "main": "./dist/main.js",
   "author": "iyonaga <yiyonaga@gmail.com>",
@@ -18,6 +18,7 @@
     "package:mac": "yarn build && electron-builder --mac --x64",
     "package:win": "yarn build && electron-builder --win --x64",
     "postinstall": "electron-builder install-app-deps",
+    "release": "yarn build && electron-builder --mac --win -p always",
     "lint": "eslint --ext .js,.jsx src --format codeframe",
     "lint:fix": "eslint --ext .js,.jsx src --format codeframe --fix",
     "precommit": "lint-staged"
@@ -108,6 +109,8 @@
     "@fortawesome/react-fontawesome": "^0.1.0-11",
     "autosize": "^4.0.2",
     "electron-json-storage": "^4.0.2",
+    "electron-log": "^2.2.17",
+    "electron-updater": "^3.1.1",
     "emoji-mart": "^2.7.0",
     "moment": "^2.21.0",
     "node-twitter-api": "^1.8.0",
