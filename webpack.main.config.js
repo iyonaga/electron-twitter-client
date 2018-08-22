@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
@@ -36,17 +35,17 @@ module.exports = {
     extensions: ['.js', '.jsx']
   },
 
-  plugins: [
-    new webpack.EnvironmentPlugin(['NODE_ENV']),
-    new UglifyJSPlugin({
-      // parallel: true,
-      uglifyOptions: {
-        compress: {
-          drop_console: true
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        uglifyOptions: {
+          compress: {
+            drop_console: true
+          }
         }
-      }
-    })
-  ],
+      })
+    ]
+  },
 
   target: 'electron-main'
 };
