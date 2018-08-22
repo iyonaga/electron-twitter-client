@@ -49,7 +49,6 @@ module.exports = (env, argv) => {
             {
               loader: 'css-loader',
               options: {
-                minimize: true,
                 modules: false
               }
             },
@@ -65,7 +64,6 @@ module.exports = (env, argv) => {
             {
               loader: 'css-loader',
               options: {
-                minimize: true,
                 modules: true,
                 localIdentName: '[name]--[local]--[hash:base64:5]'
               }
