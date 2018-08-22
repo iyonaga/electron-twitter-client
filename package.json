@@ -1,6 +1,7 @@
 {
-  "name": "sparrow",
+  "name": "electron-twitter-client",
   "version": "1.0.0",
+  "description": "Twitter client built with Electron, React and Redux",
   "main": "./dist/main.js",
   "author": "iyonaga <yiyonaga@gmail.com>",
   "license": "MIT",
@@ -13,6 +14,10 @@
     "build:renderer": "cross-env BABEL_ENV=renderer NODE_ENV=production webpack --config webpack.renderer.config.js",
     "prestart": "yarn build",
     "start": "electron .",
+    "package": "yarn build && electron-builder -mw --x64",
+    "package:mac": "yarn build && electron-builder --mac --x64",
+    "package:win": "yarn build && electron-builder --win --x64",
+    "postinstall": "electron-builder install-app-deps",
     "lint": "eslint --ext .js,.jsx src --format codeframe",
     "lint:fix": "eslint --ext .js,.jsx src --format codeframe --fix",
     "precommit": "lint-staged"
@@ -21,6 +26,40 @@
     "*.{js,jsx}": [
       "eslint"
     ]
+  },
+  "build": {
+    "appId": "com.electron.twitter-client",
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 220,
+          "type": "file"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "build/icons/icon.icns",
+      "target": "dmg"
+    },
+    "win": {
+      "icon": "build/icons/icon.ico",
+      "target": "nsis"
+    },
+    "files": [
+      "dist/",
+      "package.json",
+      "build/icons/"
+    ],
+    "directories": {
+      "output": "build"
+    }
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

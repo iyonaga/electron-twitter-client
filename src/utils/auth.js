@@ -44,7 +44,7 @@ export default class Auth {
           .then(res => {
             resolve(res);
             if (win) {
-              win.close();
+              setTimeout(() => win.close(), 100);
             }
           })
           .catch(error => {
