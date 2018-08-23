@@ -1,0 +1,176 @@
+.mediaContainer {
+  border: 1px solid rgba(0, 0, 0, .1);
+  border-radius: 5px;
+  margin-top: 10px;
+  max-width: 500px;
+  overflow: hidden;
+}
+
+.imageContainer {
+  display: flex;
+
+  &--single {
+    .imageContents {
+      width: 100%;
+
+      img {
+        width: 100%;
+      }
+    }
+  }
+
+  &--double {
+    //height: 253px;
+    //width: 506px;
+
+    .imageContents:first-child {
+      width: 50%;
+    }
+
+    .imageContents:last-child {
+      width: 50%;
+
+      .imageItem {
+        height: 100%;
+      }
+    }
+  }
+
+  &--triple {
+    //height: 337.3333333333333px;
+    //width: 506px;
+
+    .imageContents:first-child {
+      width: (2 / 3 * 100%);
+    }
+
+    .imageContents:last-child {
+      width: calc(100% / 3);
+
+      .imageItem {
+        height: calc((100% - 2px) / 2);
+      }
+    }
+
+  }
+
+  &--quad {
+    //height: 379.5px;
+    //width: 506px;
+
+    .imageContents:first-child {
+      width: (3 / 4 * 100%);
+    }
+
+    .imageContents:last-child {
+      width: calc(100% / 4);
+
+      .imageItem {
+        height: calc((100% - 2px) / 3);
+      }
+    }
+  }
+}
+
+.imageContents {}
+
+.multipleImages {
+  .imageContents:first-child {
+    margin-right: 1px;
+
+    .imageItem {
+      height: 100%;
+    }
+  }
+
+  .imageContents:last-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .imageItem {
+    img {
+      height: 100%;
+      object-fit: cover;
+      width: 100%;
+    }
+  }
+}
+
+.imageItem {
+  img {
+    cursor: pointer;
+  }
+}
+
+.videoContainer {}
+
+.modalContent {}
+
+.slideContainer {
+  max-width: 700px;
+  padding: 20px;
+  position: relative;
+
+  &:global(.hasSlideButton) {
+    padding: 20px 65px;
+  }
+}
+
+.slideItem {
+  display: none;
+  height: auto;
+  max-height: calc(100vh - 20px);
+  width: auto;
+
+  &:global(.isActive) {
+    display: block;
+  }
+}
+
+.slideButton {
+  bottom: 0;
+  height: 65px;
+  margin: auto;
+  outline: none;
+  position: absolute;
+  top: 0;
+  transition: .3s;
+  width: 65px;
+
+  &:hover {
+    opacity: .6;
+  }
+
+  &:before {
+    bottom: 0;
+    border-top: 1px solid #fff;
+    border-right: 1px solid #fff;
+    content: '';
+    display: block;
+    height: 45px;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    width: 45px;
+  }
+
+  &--right {
+    right: 0;
+
+    &:before {
+      left: 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &--left {
+    left: 0;
+
+    &:before {
+      right: 0;
+      transform: rotate(-135deg);
+    }
+  }
+}

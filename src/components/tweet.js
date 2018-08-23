@@ -1,9 +1,9 @@
 import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { shell } from 'electron';
-import { Player, BigPlayButton } from 'video-react';
 import twemoji from 'twemoji';
 import TweetHeader from './tweetHeader';
+import TweetMedia from './tweetMedia';
 import TweetFooter from './tweetFooter';
 import styles from './tweet.module.scss';
 
@@ -12,75 +12,6 @@ export default class Tweet extends PureComponent {
     tweet: PropTypes.object.isRequired,
     searchHashtag: PropTypes.func.isRequired
   };
-
-  static renderFirstImage(url) {
-    return (
-      <div className={styles.imageItem}>
-        <img src={url} alt="" />
-      </div>
-    );
-  }
-
-  static renderRemainingImage(media) {
-    media.shift();
-    return media.map(m => (
-      <div className={styles.imageItem} key={m.id_str}>
-        <img src={m.media_url} alt="" />
-      </div>
-    ));
-  }
-
-  static renderImages(entities) {
-    const isMultiple = entities.media.length > 1;
-    const numList = ['single', 'double', 'triple', 'quad'];
-    const imageNum = numList[entities.media.length - 1];
-
-    return (
-      <div
-        className={`${styles.imageContainer} ${
-          styles[`imageContainer--${imageNum}`]
-        } ${isMultiple ? styles.multipleImages : ''}`}
-      >
-        <div className={styles.imageContents}>
-          {Tweet.renderFirstImage(entities.media[0].media_url)}
-        </div>
-        {isMultiple && (
-          <div className={`${styles.imageContents}`}>
-            {Tweet.renderRemainingImage(entities.media)}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  static renderVideo(video, thumbnail) {
-    return (
-      <div className={styles.videoContainer}>
-        <Player muted poster={thumbnail} src={video.variants[0].url}>
-          <BigPlayButton position="center" />
-        </Player>
-      </div>
-    );
-  }
-
-  static renderMedia(tweet) {
-    if (!tweet.extended_entities) return false;
-    const entities = tweet.extended_entities;
-
-    return (
-      <div className={styles.mediaContainer}>
-        {(() => {
-          if (entities.media[0].video_info) {
-            return Tweet.renderVideo(
-              entities.media[0].video_info,
-              entities.media[0].media_url_https
-            );
-          }
-          return Tweet.renderImages(entities);
-        })()}
-      </div>
-    );
-  }
 
   static renderQuoteTweet(tweet) {
     if (!tweet.is_quote_status || !tweet.quoted_status_permalink) return false;
@@ -117,7 +48,6 @@ export default class Tweet extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.linkedText = ::this.linkedText;
     this.onHashtagClick = ::this.onHashtagClick;
   }
 
@@ -298,7 +228,7 @@ export default class Tweet extends PureComponent {
         />
         <div className={styles.textContainer}>
           <div className={styles.tweetText}>{this.linkedText(tweet)}</div>
-          {Tweet.renderMedia(tweet)}
+          <TweetMedia tweet={tweet} />
           {Tweet.renderQuoteTweet(tweet)}
         </div>
         <TweetFooter tweet={this.props.tweet} />
