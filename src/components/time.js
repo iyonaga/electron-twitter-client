@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 
@@ -14,7 +14,7 @@ Moment.updateLocale('en', {
   }
 });
 
-export default class Time extends Component {
+export default class Time extends PureComponent {
   static propTypes = {
     createdAt: PropTypes.string.isRequired
   };
