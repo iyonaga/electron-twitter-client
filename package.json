@@ -1,6 +1,6 @@
 {
   "name": "electron-twitter-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Twitter client built with Electron, React and Redux",
   "main": "./dist/main.js",
   "author": "iyonaga <yiyonaga@gmail.com>",
